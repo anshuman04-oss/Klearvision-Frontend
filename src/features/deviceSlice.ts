@@ -1,18 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { registerDevice, removeDevice } from "../api/deviceAPI";
+import { Status } from "../constants";
 
 interface DeviceState {
     devices: string[]
-    status: "idle" | "loading" | "succeded" | "failed"
+    status: Status
     error: string | null
 }
 
 const initialState: DeviceState = {
-    devices: [],
-    status: "idle",
+    devices: [],    // ToDo - this has to be map of deviceId to device object
+    status: Status.Idle,
     error: null
 }
+
+// 
 
 export const registerDeviceAsync = createAsyncThunk(
     "devices/register",
@@ -45,8 +48,10 @@ const deviceSlice = createSlice({
             .addCase(registerDeviceAsync.pending, (state) => {
                 state.status = "loading"
             })
-            .addCase(registerDeviceAsync.fulfilled, (state, action: PayloadAction<string>) => {
+            .addCase(registerDeviceAsync.fulfilled, (state, action: PayloadAction<DeviceState>) => {
                 state.status = "succeded"
+                const {deviceId} = action.payload;
+                state.devices[deviceId] = action.payload
                 state.devices.push(action.payload)
             })
             .addCase(registerDeviceAsync.rejected, (state, action) => {

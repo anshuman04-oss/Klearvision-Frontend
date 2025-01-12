@@ -1,22 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { validateUser } from "../api/authAPI";
+import { Status } from "../constants";
 
-interface User {
+// ToDo - Access token and expiry time should be stored in redux store.
+
+export interface User {
     userid: string;
     password: string;
 }
 
-interface UserState {
+export interface UserState {
     users: User[];
     isAuthenticated: boolean;
-    status: "idle" | "loading" | "succeeded" | "failed";
+    // ToDo - Create an enum for status
+    status: Status;
     error: string | null;
 }
 
-const initialState = {
+const initialState = {  
     users: [{userid: "1", password: "1"}],
     isAuthenticated: false,
-    status: "idle",
+    status: Status.Idle,
     error: null
 };
 
@@ -43,15 +49,15 @@ export const userSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(checkCredentials.pending, (state) => {
-                state.status = "loading"
+                state.status = Status.Loading;
                 state.error = null
             })
             .addCase(checkCredentials.fulfilled, (state) => {
-                state.status = "succeded"
+                state.status = Status.Succeeded;
                 state.isAuthenticated = true
             })
             .addCase(checkCredentials.rejected, (state, action) => {
-                state.status = "failed"
+                state.status = Status.Failed;
                 state.error = (action.payload as string)
             })
     }

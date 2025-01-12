@@ -2,13 +2,13 @@
 import React, { useState } from 'react'
 import { useDispatch }from 'react-redux'
 import { addUser } from '../../features/loginSlice';
-import useAuth from '../../hooks/validateCredentials';
+import UseAuth from '../../hooks/validateCredentials';
 
 function LoginPage() {
 
     const [userid, setUserid] = useState("");
     const [password, setPassword] = useState("")
-    const { validateCredentials, status, error } = useAuth()
+    const { validateCredentials, status, error } = UseAuth()
     const dispatch = useDispatch();
 
     // const handleSubmit = (e: any) => {

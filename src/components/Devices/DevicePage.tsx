@@ -16,6 +16,9 @@ function DevicePage() {
         removeDevice(deviceId)
     }
 
+    // ToDo - A single page should not contain all the logicsm, but only other components
+    // One component should handle one api calls
+
     return (
         <>
         <div className="py-10">

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { checkCredentials } from "../features/loginSlice";
 
-const useAuth = () => {
+const UseAuth = () => {
     const dispatch = useDispatch<AppDispatch> ()
     const { isAuthenticated, status, error } = useSelector((state: RootState) => state.user);
 
@@ -13,4 +13,4 @@ const useAuth = () => {
     return {isAuthenticated, status, error, validateCredentials}
 }
 
-export default useAuth
+export default UseAuth
