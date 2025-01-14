@@ -21,7 +21,7 @@ function handleIdleness(access_token: string, expiry_time: string) {
     } 
 }
 
-// ToDo - Camel case for all the var names
+// ToDo - Camel case for all the var names - last
 // ToDo - If the user directly comes to some other page like stream, redirect to login.
 // If already authorized, login route will always redirect to home.
 

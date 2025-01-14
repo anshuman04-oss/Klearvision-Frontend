@@ -59,15 +59,15 @@ const Streamer: FC = () => {
 
     return (
         <>
-            <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
-                <h1 className='text-3xl font-bold mb-6 text-gray-800'>Live Video Streaming</h1>
-                <div className='relative w-full max-w-3xl aspect-w-16 aspect-h-9 mb-4'>
+            <div className='flex flex-col items-start justify-center min-h-screen bg-gray-700 ml-5'>
+                <h1 className='text-3xl font-bold mb-3 text-gray-900'>Live Video Streaming</h1>
+                <div className='relative w-1/4 max-w-3xl aspect-w-16 aspect-h-9 mb-4'>
                     <video 
                         ref={userVideoRef}
                         autoPlay
                         muted
                         playsInline
-                        className='w-full h-full rounded-lg border border-gray-300 shadow-md'
+                        className='w-full h-full rounded-lg border border-gray-300 shadow-md mb-1'
                     />
                     <button
                         onClick={handleStartStreaming}

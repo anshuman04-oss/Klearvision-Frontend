@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import useDevice from "../../hooks/useDevice"
+// import useDevice from "../../hooks/useDevice"
 
 function DevicePage() {
 

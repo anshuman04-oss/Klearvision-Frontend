@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { configureStore } from "@reduxjs/toolkit";
-import { userSlice } from "../features/loginSlice";
+import loginSlice from "../features/loginSlice";
 import deviceReducer from "../features/deviceSlice";
 
 export const store = configureStore({
     reducer: {
-        user: userSlice.reducer,
+        user: loginSlice,
         device: deviceReducer
     }
 })
