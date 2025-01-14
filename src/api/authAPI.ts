@@ -1,50 +1,96 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
-import API_BASE_URL from "../constants";
+import API_BASE_URL, { Status } from "../constants";
+import { AppDispatch } from "../app/store";
+import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/loginSlice";
+import { TokenDetails, User } from "../types";
 
-let expiresAt = Date.now();
+//TODO - Implement the fetchUser dispatch function
+export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch) => {
+    const url = `${API_BASE_URL}/v1/`
+  try {
+    dispatch(loginStatus({status : Status.LOADING}));
+    
+    const response = await axios.get(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const data = await response.data as User;
+    
+    dispatch(fetchUserDetails({userData: data}));
 
-function handleIdleness(access_token: string, expiry_time: string) {
-    expiresAt = expiresAt + Number(expiry_time) * 1000;
-    // Considering the exipry_time given is in miliseconds.
+  } catch (error) {
+    console.log(error)
+    dispatch(loginError({errorData : error}))
+  }
+};
 
-    localStorage.setItem('access_token', access_token)
-    localStorage.setItem('Expires_at', expiresAt.toString())
-
-    const currentTime = Date.now();
-
-    if(currentTime > expiresAt) {
-        alert('Your session has been expired. Please log in again');
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('Expires_at')
-        window.location.href = '/login';
-    } 
+export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
+  //TODO - Need to implement
 }
+
+export const userLogin = (username : string, password: string) => async (dispatch: AppDispatch) => {
+    const url = `${API_BASE_URL}/v1/login`
+  try {
+    dispatch(loginStatus({status: Status.LOADING}));
+    const response = await axios.post(url,{
+        loginId : username,
+        password
+    }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+    });
+    
+    const data = await response.data as TokenDetails;
+
+    dispatch(login({tokenData: {token : data.token, expiry: Date.now()/1000 + data.expiry, type: data.type}}));
+
+  } catch (error) {
+    console.log(error)
+    dispatch(loginError({errorData: error}))
+  }
+};
+
+export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
+//   const url = `${API_BASE_URL}/renew`
+  try {
+    // dispatch(setUserLoading(true));
+    // const response = await fetch(url, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({uuid, token})
+    // });
+    
+    // const data = await response.json() as UserToken;
+
+    // dispatch(fetchUserSuccess(data.user));
+    // dispatch(userLoginSuccess({token : data.token, expiry: Date.now()/1000 + 3600}));
+
+  } catch (error) {
+    console.log(error)
+    dispatch(loginError({errorData: error}))
+  }
+};
+
+export const userLogout = () => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(loginStatus({status: Status.LOADING}));
+    dispatch(logout());
+
+  } catch (error) {
+    console.log(error)
+    dispatch(loginError({errorData: error}))
+  }
+};
 
 // ToDo - Camel case for all the var names - last
 // ToDo - If the user directly comes to some other page like stream, redirect to login.
 // If already authorized, login route will always redirect to home.
-
-export const validateUser = async (userId: string, password: string) => {
-    try {
-        const response = await axios.post(`${API_BASE_URL}/v1/login`, {
-            userId,
-            password
-        });
-
-        console.log(response.data.access_token)
-        console.log(response.data.expires_in)
-
-        setInterval(() => {
-            handleIdleness(response.data.access_token, response.data.expires_in)
-        }, response.data.expires_in)
-
-        return response.data;
-    } catch(error) {
-        console.error("API Error: ", error)
-        throw error;
-    }
-}
 
 
 

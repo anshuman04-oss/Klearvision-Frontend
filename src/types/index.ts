@@ -1,24 +1,42 @@
 // ToDo - All models should be in types folder
 // For ex, all the login related models should be in login.ts under types folder.
 // Impoert and export all the types.
+import { UUID } from "crypto";
 import { Status } from "../constants";
 import React from "react";
 
 interface User {
-    userId: string;
-    password: string;
+    userId?     : UUID | "" | undefined
+    firstName   : string
+    lastName    : string | undefined
+    phone       : number | string
+    email       : string
+    password    : string
+}
+
+interface TokenDetails {
+    token   : string
+    expiry  : number
+    type    : string
 }
 
 interface UserState {
-    users: User[];
-    isAuthenticated: boolean;
-    // ToDo - Create an enum for status
-    status: Status;
-    error: string | null;
+    userDetails     : null | User
+    tokenDetails    : null | TokenDetails
+    isAuthenticated : boolean
+    status          : Status;
+    error           : null | string
+}
+
+interface Device {
+    deviceId        : UUID
+    streamKey       : string
+    deviceName      : string | undefined
+    playBackUrl     : string
 }
 
 interface DeviceState {
-    devices: string[]
+    devices: { [key: string]: Device }
     status: Status
     error: string | null
 }
@@ -40,4 +58,4 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     className?: string
 }
 
-export type { User, UserState, DeviceState, InputProps, FormData, SelectProps }
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps }

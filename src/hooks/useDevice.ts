@@ -1,21 +1,41 @@
-// /* eslint-disable @typescript-eslint/no-unused-vars */
-// import { useDispatch, useSelector } from "react-redux";
-// import { AppDispatch, RootState } from "../app/store";
-// import { registerDeviceAsync, removeDeviceAsync } from "../features/deviceSlice";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { Device, DeviceState, UserState } from "../types";
+import { logout } from "../features/loginSlice";
+import { useEffect } from "react";
+import { registerDevice, removeDevice } from "../api/deviceAPI";
+import { UUID } from "crypto";
 
-// const useDevice = () => {
-//     const dispatch = useDispatch<AppDispatch>();
-//     const { devices, status, error } = useSelector((state: RootState) => state.device);
+const useDevice = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { devices, status, error } = useSelector<RootState, DeviceState>((state: RootState) => state.device);
+    const {tokenDetails} = useSelector<RootState, UserState>(state => state.user);
+    const deviceList : Device[] = []
+    if(devices) Object.keys(devices).forEach((deviceId: string) =>{
+        deviceList.push(devices[deviceId])
+    })
 
-//     const registerDevice = (deviceId: string, userId: string, password: string) => {
-//         dispatch(registerDeviceAsync({ deviceId, userId, password }))
-//     }
+    let accessToken = "";
+    
+    useEffect(() => {
+		if(tokenDetails && tokenDetails.expiry > Date.now()/1000) {
+            accessToken = tokenDetails.token;
+        } else {
+            dispatch(logout());
+        }
+	}, [])
+    
+    
+    const deviceRegister = (deviceName: string) => {
+        dispatch(registerDevice(deviceName, accessToken));
+    }
 
-//     const removeDevice = (deviceId: string) => {
-//         dispatch(removeDeviceAsync(deviceId))
-//     }
+    const deviceRemove = (deviceId: UUID) => {
+        dispatch(removeDevice(deviceId, accessToken))
+    }
 
-//     return { devices, error, status, registerDevice, removeDevice }
-// }
+    return { devices, deviceList, error, status, deviceRegister, deviceRemove }
+}
 
-// export default useDevice
+export default useDevice

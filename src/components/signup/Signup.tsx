@@ -13,7 +13,7 @@ export default function Signup() {
     const [error, setError] = useState("")
     const { register, handleSubmit } = useForm()
 
-    const signup = async (data) => {
+    const signup = async (data: any) => {
         setError("")
         try {
             const userData = await axios.post(`${API_BASE_URL}/v1/signup`, data)    // This will post the user data in the database. Before that, we need to search in the database.
@@ -24,7 +24,7 @@ export default function Signup() {
                 dispatch(login(userData))
                 navigate("/")
             }
-        } catch (error) {
+        } catch (error : any) {
             setError(error.message);
         }
     }

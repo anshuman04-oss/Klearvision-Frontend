@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Container, LogoutBtn } from "../../../../../../../Downloads/KlearVisenWebApp-Login-and-Devices-Page/KlearVisenWebApp-Login-and-Devices-Page/src/constants";
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import Container from "../../container/Container";
+import LogoutBtn from "./LogoutBtn";
 
 function Header() {
 

@@ -3,15 +3,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit"
+import { UserState } from "../types"
+import { Status } from "../constants";
 // import { validateUser } from "../api/authAPI";
 // import { Status } from "../constants";
 // import { User, UserState } from "../types";
 
 // ToDo - Access token and expiry time should be stored in redux store.
 
-const initialState = {  
-    status: false,
-    userData: null
+
+const initialState : UserState = {
+    userDetails: null,
+    tokenDetails: null,
+    isAuthenticated: true, //TODO - default authentication will be false
+    status: Status.IDLE,
+    error: null
 };
 
 const loginSlice = createSlice({
@@ -19,17 +25,33 @@ const loginSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            state.status = true
-            state.userData = action.payload.userData;
+            state.tokenDetails = action.payload.tokenData
+            window.localStorage.setItem("kvsToken", JSON.stringify(state.tokenDetails))
+            state.isAuthenticated = Boolean(state.tokenDetails && state.tokenDetails.token && state.tokenDetails.expiry > Date.now()/1000);
+            state.status = Status.SUCCEEDED
         },
         logout: (state) => {
-            state.status = false
-            state.userData = null
+            window.localStorage.clear();
+            state.userDetails = null;
+            state.tokenDetails = null;
+            state.isAuthenticated = false;
+            state.status = Status.IDLE
+        },
+        fetchUserDetails: (state, action) => {
+            state.userDetails = action.payload.userData;
+            state.status = Status.SUCCEEDED
+        },
+        loginError: (state, action) => {
+            state.error = action.payload.errorData
+            state.status = Status.FAILED
+        },
+        loginStatus: (state, action) => {
+            state.status = action.payload.status
         }
     }
 })
 
-export const { login, logout } = loginSlice.actions;
+export const { login, logout, fetchUserDetails, loginError, loginStatus } = loginSlice.actions;
 
 export default loginSlice.reducer;
 

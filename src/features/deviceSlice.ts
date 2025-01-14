@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
+import { Device, DeviceState } from "../types";
+import { Status } from "../constants";
 // import { registerDevice, removeDevice } from "../api/deviceAPI";
 // import { Status } from "../constants";
 // import { DeviceState } from "../types";
 
-const initialState = {
-    status: false,
-    deviceData: null
+const initialState : DeviceState = {
+    devices: {},
+    status: Status.IDLE,
+    error: null
 }
 
 const deviceSlice = createSlice({
@@ -15,17 +18,28 @@ const deviceSlice = createSlice({
     initialState,
     reducers: {
         register: (state, action) => {
-            state.status = true,
-            state.deviceData = action.payload.deviceData;
+            const device: Device = action.payload.deviceData as Device;
+            state.devices[device.deviceId] = device;
+            state.status = Status.SUCCEEDED
         },
-        deregister: (state) => {
-            state.status = false,
-            state.deviceData = null
+        deregister: (state, action) => {
+            const device: Device = action.payload.deviceData as Device;
+            Object.keys(state.devices).forEach(deviceId => {
+                if(deviceId === device.deviceId) delete state.devices[deviceId];
+            });
+            state.status = Status.SUCCEEDED
+        },
+        deviceError: (state, action) => {
+            state.error = action.payload.errorData
+            state.status = Status.FAILED
+        },
+        deviceStatus: (state, action) => {
+            state.status = action.payload.status
         }
     }
 })
 
-export const {register, deregister} = deviceSlice.actions;
+export const {register, deregister, deviceError, deviceStatus} = deviceSlice.actions;
 
 export default deviceSlice.reducer
 

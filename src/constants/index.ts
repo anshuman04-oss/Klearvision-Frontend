@@ -7,10 +7,10 @@ import Input from "../components/Input";
 
 // ToDo - Convert to all caps for status
 export enum Status {
-    Idle = "idle",
-    Loading = "loading",
-    Succeeded = "succeeded",
-    Failed = "failed"
+    IDLE = "IDLE",
+    LOADING = "LOADING",
+    SUCCEEDED = "SUCCEEDED",
+    FAILED = "FAILED"
 }
 
 export { Container, LogoutBtn, Button, Input }

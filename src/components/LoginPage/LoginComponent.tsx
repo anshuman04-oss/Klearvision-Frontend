@@ -9,7 +9,7 @@ import {useForm} from "react-hook-form"
 import axios from 'axios'
 import API_BASE_URL, { Button, Input } from '../../constants'
 
-function LoginPage() {
+function LoginComponent() {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -28,7 +28,7 @@ function LoginPage() {
                 console.log(userData)
                 navigate("/")
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
             setError(error.message)
         }
@@ -101,7 +101,7 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default LoginComponent
 
 
 
