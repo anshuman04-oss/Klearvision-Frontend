@@ -1,32 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Link, useNavigate } from "react-router-dom";
-import {useDispatch} from "react-redux"
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form"
-import API_BASE_URL, { Button, Input } from "../../constants";
-import axios from "axios";
-import { login } from "../../features/loginSlice";
+import { Button, Input, Status } from "../../constants";
+import useAuth from "../../hooks/useAuth";
+import { User } from "../../types";
+import Loading from "../Loading";
+
+type SignUpFormData = {
+    firstName   : string
+    lastName    : string | undefined
+    email       : number | string
+    phone       : string
+    password    : string | undefined
+}
 
 export default function Signup() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [error, setError] = useState("")
-    const { register, handleSubmit } = useForm()
+    const {error, status, signUpUser} = useAuth();
+    const { register, handleSubmit } = useForm<SignUpFormData>()
+    
 
-    const signup = async (data: any) => {
-        setError("")
-        try {
-            const userData = await axios.post(`${API_BASE_URL}/v1/signup`, data)    // This will post the user data in the database. Before that, we need to search in the database.
-            if(userData) {
-                // const userData = await authService.getCurrentUser()
-                // We need to search the data of the user in the database. If match is found, redirect him to 
-                // the login page.
-                dispatch(login(userData))
-                navigate("/")
-            }
-        } catch (error : any) {
-            setError(error.message);
-        }
+    const onSubmit = (data: SignUpFormData) => {
+        const user = data as User;
+        signUpUser(user);
     }
     return (
         <div className='flex justify-center items-center h-[90vh] w-full flex-col'>
@@ -44,7 +39,7 @@ export default function Signup() {
             {error && <p className="text-red-600 mt-8 text-center bg-gray-100 py-3 px-6">{error}</p>}
             <div className='bg-gray-900 text-gray-50 rounded-lg px-8 py-5'>
                 <form 
-                    onSubmit={handleSubmit(signup)}
+                    onSubmit={handleSubmit(onSubmit)}
                     className='flex items-center justify-center flex-col rounded-lg px-20'
                 >First Name
                     <Input 
@@ -70,34 +65,34 @@ export default function Signup() {
                         // onChange={(e) => setUserid(e.target.value)}
                         {
                             ...register("lastName", {
-                                required: true
+                                required: false
                             })
                         }
                     />
                 Email Id
                     <Input 
-                        label='mail'
+                        label='email'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
                         placeholder='Enter your email id'
                         // value={userid}
                         // onChange={(e) => setUserid(e.target.value)}
                         {
-                            ...register("mail", {
+                            ...register("email", {
                                 required: true
                             })
                         }
                     />
                 Phone Number
                     <Input 
-                        label='phNo'
+                        label='phone'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
                         placeholder='Enter your email id'
                         // value={userid}
                         // onChange={(e) => setUserid(e.target.value)}
                         {
-                            ...register("phNo", {
+                            ...register("phone", {
                                 required: true
                             })
                         }
@@ -124,8 +119,8 @@ export default function Signup() {
                         Submit
                     </Button>
                 </form>
-                {status === "loading" && <p>loading</p>}
-                {status === "failed" && <p className='text-red-500'>{error}</p>}
+                {status === Status.LOADING && <Loading />}
+                {status === Status.FAILED && <p className='text-red-500'>{error}</p>}
         </div>
     </div>
 )}

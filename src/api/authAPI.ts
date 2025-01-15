@@ -44,9 +44,13 @@ export const userLogin = (username : string, password: string) => async (dispatc
         }
     });
     
-    const data = await response.data as TokenDetails;
-
-    dispatch(login({tokenData: {token : data.token, expiry: Date.now()/1000 + data.expiry, type: data.type}}));
+    const data = await response.data as any;
+    const tokenData: TokenDetails = {
+      token: data.access_token,
+      expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
+      type: data.token_type
+    }
+    dispatch(login({tokenData}));
 
   } catch (error) {
     console.log(error)
@@ -55,21 +59,23 @@ export const userLogin = (username : string, password: string) => async (dispatc
 };
 
 export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
-//   const url = `${API_BASE_URL}/renew`
+  const url = `${API_BASE_URL}/v1/auth/renewAccessToken`
   try {
-    // dispatch(setUserLoading(true));
-    // const response = await fetch(url, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({uuid, token})
-    // });
+    dispatch(loginStatus({status: Status.LOADING}));
+    const response = await axios.get(url,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+    });
     
-    // const data = await response.json() as UserToken;
-
-    // dispatch(fetchUserSuccess(data.user));
-    // dispatch(userLoginSuccess({token : data.token, expiry: Date.now()/1000 + 3600}));
+    const data = await response.data as any;
+    const tokenData: TokenDetails = {
+      token: data.access_token,
+      expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
+      type: data.token_type
+    }
+    dispatch(login({tokenData}));
 
   } catch (error) {
     console.log(error)

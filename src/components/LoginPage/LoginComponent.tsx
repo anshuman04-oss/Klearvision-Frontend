@@ -7,31 +7,24 @@ import { login as authLogin } from '../../features/loginSlice'
 import {useDispatch} from "react-redux"
 import {useForm} from "react-hook-form"
 import axios from 'axios'
-import API_BASE_URL, { Button, Input } from '../../constants'
+import API_BASE_URL, { Button, Input, Status } from '../../constants'
+import useAuth from '../../hooks/useAuth'
+import Loading from '../Loading'
+
+
+type LoginFormData = {
+    username: string
+    password: string
+}
 
 function LoginComponent() {
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const {register, handleSubmit} = useForm()
-    const [error, setError] = useState("")
+    const {register, handleSubmit} = useForm<LoginFormData>()
+    const {error, status, loginUser} = useAuth();
 
-    const login = async(data: Object) => {
-        setError("")
-        try {
-            // Replace authService from the mega blog project with api call.
-            console.log(data)
-            const response = await axios.post(`${API_BASE_URL}/v1/login`, data)
-            if(response) {
-                const userData = await response.data
-                if(userData) dispatch(authLogin(userData));
-                console.log(userData)
-                navigate("/")
-            }
-        } catch (error: any) {
-            console.error(error)
-            setError(error.message)
-        }
+    const onSubmit = (data: LoginFormData) => {
+        console.log('Form submitted', data)
+        loginUser(data.username, data.password)
     }
 
     return (
@@ -50,20 +43,20 @@ function LoginComponent() {
             {error && <p className="text-red-600 mt-8 text-center bg-gray-100 py-3 px-6">{error}</p>}
             <div className='bg-gray-900 text-gray-50 rounded-lg px-20 py-5'>
                 <form 
-                    onSubmit={handleSubmit(login)}
+                    onSubmit={handleSubmit(onSubmit)}
                     className='flex items-center justify-center flex-col rounded-lg'
                 >
                     <div className='py-0 mt-0 mb-4'>
-                    <p className='ml-16 py-1'>Login Id</p>
+                    <p className='ml-16 py-1'>Username</p>
                     <Input 
-                        label='loginId'
+                        label='username'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg mt-0'
-                        placeholder='Enter login id'
+                        placeholder='Enter username'
                         // value={userid}
                         // onChange={(e) => setUserid(e.target.value)}
                         {
-                            ...register("loginId", {
+                            ...register("username", {
                                 required: true
                             })
                         }
@@ -94,8 +87,8 @@ function LoginComponent() {
                         Submit
                     </Button>
                 </form>
-                {status === "loading" && <p>loading</p>}
-                {status === "failed" && <p className='text-red-500'>{error}</p>}
+                {status === Status.LOADING && <Loading />}
+                {status === Status.FAILED && <p className='text-red-500'>{error}</p>}
             </div>
         </div>
     )

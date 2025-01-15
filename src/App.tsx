@@ -1,11 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { renewToken } from './api/authAPI';
-import { RootState, AppDispatch } from './app/store';
 import Loading from './components/Loading';
-import { TokenDetails, UserState } from './types';
+import { TokenDetails } from './types';
 import PrivateRoute from './pages/PrivateRoute';
+import useAuth from './hooks/useAuth';
+import { KVS_LOCAL_STORAGE_KEY } from './constants';
 
 // Lazy load your components
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -21,33 +20,27 @@ const StreamPage = React.lazy(() => import('./pages/StreamPage'));
 function App() {
 
   const [userToken, setUserToken] = useState<TokenDetails|null>(null);
-  const [userUUID, setUserUUID] = useState<string|null>(null);
-  const [userFetched, setUserFetched] = useState<boolean>(false);
+  const [newTokenFetched, setNewTokenFetched] = useState<boolean>(false);
 
-  const {isAuthenticated} = useSelector<RootState, UserState>(state => state.user)
-
-  const dispatch = useDispatch<AppDispatch>();
+  const {isAuthenticated, tokenRenew} = useAuth()
 
   useEffect(()=>{
     if(!isAuthenticated){
-      if(!userUUID) {
-          setUserUUID(window.localStorage.getItem("acadomateUUID") ?? "");
-      }
       if(!userToken) {
-          const acadomateToken = window.localStorage.getItem("acadomateToken");
-          const userToken: TokenDetails = acadomateToken ? JSON.parse(acadomateToken) : null;
+          const storedToken = window.localStorage.getItem(KVS_LOCAL_STORAGE_KEY);
+          const userToken: TokenDetails = storedToken ? JSON.parse(storedToken) : null;
           setUserToken(userToken ?? {token : ""});
       }
-      if(userToken && userUUID && !userFetched) {
+      if(userToken && !newTokenFetched) {
           const tokenExpired = userToken && userToken.expiry < Date.now()/1000;
           console.log("tokenExpired : ", tokenExpired)
-          if(!tokenExpired) dispatch(renewToken(userToken.token));
-          setUserFetched(true);
+          if(!tokenExpired) tokenRenew(userToken.token);
+          setNewTokenFetched(true);
       }
     }
-    console.log(userUUID, userToken, userFetched)
+    console.log(userToken, newTokenFetched)
       
-  },[userUUID,userToken])
+  },[userToken])
 
   return (
       <Router>
@@ -81,7 +74,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/signup" element={<RegisterPage />} />
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

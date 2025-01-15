@@ -1,24 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Container from "../../container/Container";
 import LogoutBtn from "./LogoutBtn";
+import useAuth from "../../hooks/useAuth";
 
 function Header() {
 
-    const authStatus = useSelector((state: { status: boolean; }) => state.status)
+    const {isAuthenticated : authStatus} = useAuth();
     const navigate = useNavigate()
 
     const navItems = [
         {
-            name: "name",
-            slug: "/",
+            name: "Home",
+            slug: "/home",
             active: true
         },
         {
-            name: "login",
+            name: "About",
+            slug: "/about",
+            active: true
+        },
+        {
+            name: "Login",
             slug: "/login",
             active: !authStatus
         },
@@ -28,13 +33,18 @@ function Header() {
             active: !authStatus
         },
         {
-            name: "Devices",
-            slug: "/devices",
+            name: "Profile",
+            slug: "/profile",
             active: authStatus
         },
         {
-            name: "All Products",
-            slug: "/all-products",
+            name: "Devices",
+            slug: "/device",
+            active: authStatus
+        },
+        {
+            name: "Stream",
+            slug: "/stream",
             active: authStatus
         }
     ]

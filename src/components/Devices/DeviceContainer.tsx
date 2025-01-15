@@ -5,14 +5,14 @@ import { Status } from "../../constants";
 import { Device } from "../../types";
 // import useDevice from "../../hooks/useDevice"
 
-function DevicePage() {
+function DeviceContainer() {
 
     const [device, setDevice] = useState<Device|undefined>(undefined)
     const [deviceName, setDeviceName] = useState("")
     const { deviceList, status, error, deviceRegister, deviceRemove } = useDevice();
 
     const handleRegister = () => {
-        deviceRegister(deviceName, )
+        deviceRegister(deviceName)
     }
 
     const handleRemove = (deviceId: UUID) => {
@@ -65,4 +65,4 @@ function DevicePage() {
     );
 }
 
-export default DevicePage
+export default DeviceContainer

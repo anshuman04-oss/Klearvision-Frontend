@@ -4,7 +4,7 @@
 // import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit"
 import { UserState } from "../types"
-import { Status } from "../constants";
+import { KVS_LOCAL_STORAGE_KEY, Status } from "../constants";
 // import { validateUser } from "../api/authAPI";
 // import { Status } from "../constants";
 // import { User, UserState } from "../types";
@@ -15,7 +15,7 @@ import { Status } from "../constants";
 const initialState : UserState = {
     userDetails: null,
     tokenDetails: null,
-    isAuthenticated: true, //TODO - default authentication will be false
+    isAuthenticated: false,
     status: Status.IDLE,
     error: null
 };
@@ -26,7 +26,8 @@ const loginSlice = createSlice({
     reducers: {
         login: (state, action) => {
             state.tokenDetails = action.payload.tokenData
-            window.localStorage.setItem("kvsToken", JSON.stringify(state.tokenDetails))
+            console.log("setting kvsToken", state.tokenDetails, action.payload)
+            window.localStorage.setItem(KVS_LOCAL_STORAGE_KEY, JSON.stringify(state.tokenDetails))
             state.isAuthenticated = Boolean(state.tokenDetails && state.tokenDetails.token && state.tokenDetails.expiry > Date.now()/1000);
             state.status = Status.SUCCEEDED
         },

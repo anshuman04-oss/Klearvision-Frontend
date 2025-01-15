@@ -11,7 +11,7 @@ interface User {
     lastName    : string | undefined
     phone       : number | string
     email       : string
-    password    : string
+    password    : string | undefined
 }
 
 interface TokenDetails {

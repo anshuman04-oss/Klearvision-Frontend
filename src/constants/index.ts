@@ -13,6 +13,8 @@ export enum Status {
     FAILED = "FAILED"
 }
 
+export const KVS_LOCAL_STORAGE_KEY = "KVSToken";
+
 export { Container, LogoutBtn, Button, Input }
 
 export default API_BASE_URL;

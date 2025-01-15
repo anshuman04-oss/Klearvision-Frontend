@@ -1,28 +1,26 @@
 // src/components/PrivateRoute.tsx
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { RootState } from '../app/store';
-import { Status } from '../constants';
+import { KVS_LOCAL_STORAGE_KEY, Status } from '../constants';
 import Loading from '../components/Loading';
+import useAuth from '../hooks/useAuth';
+import { isTokenExpired } from '../helpers';
 
 interface PrivateRouteProps {
   children: JSX.Element;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const {status, isAuthenticated} = useSelector((state: RootState) => state.user);
-  const storedUUID = window.localStorage.getItem("acadomateUUID")
-  const storedToken = window.localStorage.getItem("acadomateToken")
-  const tokenExpired = storedToken && JSON.parse(storedToken).expiry < Date.now()/1000;
+  const {status, isAuthenticated} = useAuth();
+  const tokenExpired = isTokenExpired();
   const loading = status === Status.LOADING;
 
-  console.log("userState",isAuthenticated, loading, tokenExpired)
+  console.log(`userState: isAuthenticated=${isAuthenticated}, loading=${loading}, tokenExpired=${tokenExpired}`)
 
   return (
     <>
-      {loading && storedUUID && storedToken && !tokenExpired && <Loading />}
-      {!isAuthenticated && (!storedUUID || !storedToken || tokenExpired) && <Navigate to='/login' />}
+      {loading && !tokenExpired && <Loading />}
+      {!isAuthenticated && tokenExpired && <Navigate to='/login' />}
       {isAuthenticated && children}
     </>
   )
