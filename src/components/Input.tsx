@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useId } from "react";
-import { InputProps } from "../../../../../../Downloads/KlearVisenWebApp-Login-and-Devices-Page/KlearVisenWebApp-Login-and-Devices-Page/src/types";
+import { InputProps } from "../types";
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input({
     label,

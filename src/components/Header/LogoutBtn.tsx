@@ -1,5 +1,5 @@
- import {useDispatch} from 'react-redux'
-import { logout } from '../../../../../../../Downloads/KlearVisenWebApp-Login-and-Devices-Page/KlearVisenWebApp-Login-and-Devices-Page/src/features/loginSlice'
+import {useDispatch} from 'react-redux'
+import { logout } from '../../features/loginSlice'
 
 function LogoutBtn() {
 

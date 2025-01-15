@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { forwardRef } from "react";
 import { useId } from "react";
-import { SelectProps } from "../../../../../../Downloads/KlearVisenWebApp-Login-and-Devices-Page/KlearVisenWebApp-Login-and-Devices-Page/src/types";
+import { SelectProps } from "../types";
 
 function Select ({
     options = [],
