@@ -12,7 +12,7 @@ function DevicePage() {
     const { deviceList, status, error, deviceRegister, deviceRemove } = useDevice();
 
     const handleRegister = () => {
-        deviceRegister(deviceName, )
+        deviceRegister(deviceName)
     }
 
     const handleRemove = (deviceId: UUID) => {

@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import http from 'http'
 import express from 'express'
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process'
 import path from 'path'
 import { Server as SocketIO } from 'socket.io'
+import API_BASE_URL from '../constants'
+import axios from 'axios'
+// import { useSelector } from 'react-redux'
+// import { RootState } from '@reduxjs/toolkit/query'
+// import { DeviceState } from '../types'
 // import { error } from 'console'
 // import { data } from 'react-router-dom'
 // import { Stream } from 'stream'
@@ -10,6 +16,36 @@ import { Server as SocketIO } from 'socket.io'
 const app  = express()
 const server = http.createServer(app)
 const io = new SocketIO(server);
+let pbToken = "";
+let pbUrl = "";
+let expirationTime = 0;
+
+// So, now we have to call api for getting the playback token.
+const getPBToken = async (deviceId: string) => {
+    try {
+        const endPoint = `${API_BASE_URL}/v1/auth/playbackToken`;
+        const response = await axios.post(endPoint, {
+            "deviceId" : "a65561fb-138a-4da0-a6f4-b77e0d367973"
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrbGVhcnZpc2lvbi5jb20iLCJ1c2VyIjp7ImlkIjoiNDZhYzFhMGYtMmY5OC00MTIyLWFkZTktZDAwMDRiNzIzZWYyIiwibmFtZSI6ImFicmFyQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbImRldmljZS1yZWdpc3RlciIsInN0cmVhbS1wbGF5YmFjayJdfSwiYXV0aGVudGljYXRpb25UeXBlIjoiUEFTU1dPUkQiLCJpYXQiOjE3MzY5NjIwNTEsImV4cCI6MTczNjk2NTY1MX0.Xciehrhc6sXLq9BMxC8aY7Ty-5IJCV-F9Ihcd3WZdRg'
+            }
+        })
+
+        if(response) {
+            pbUrl = response.data.playBackUrl
+            pbToken = response.data.playbackAccessToken
+            expirationTime = response.data.expiration
+            console.log(`${pbUrl}?token=${pbToken}`)
+        }
+
+    } catch (error) {
+        console.error("Error fetching playback token: ", error)
+    }
+} 
+
+getPBToken("f8296422-735d-40c3-8616-36b02270a522")
 
 const options: string[] = [
     '-i',
@@ -31,7 +67,7 @@ const options: string[] = [
     '-b:a', '128k',
     '-ar', '32000',
     '-f', 'flv',
-    `rtmp://13.234.113.75/live/`,
+    `rtmp://VideoProcessingServerASG-NLB-49b63e78c9aa7744.elb.ap-south-1.amazonaws.com:443/live/sk_53RKgM8XBON1ZxHvtDifbd_9vXJVnl5n4LUcZ3JGTGgh7va0bLdFf`,
 ];
 // We are getting an error on running straightaway. Docker was needed for running without installing 
 // ffmpeg in our system. However, with proper installation of ffmpeg and addition of it as an environment 
