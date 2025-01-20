@@ -15,6 +15,7 @@ const useDevice = () => {
     if(devices) Object.keys(devices).forEach((deviceId: string) =>{
         deviceList.push(devices[deviceId])
     })
+    // Seemingly right for divices' list
 
     let accessToken = "";
     
@@ -25,7 +26,6 @@ const useDevice = () => {
             dispatch(logout());
         }
 	}, [])
-    
     
     const deviceRegister = (deviceName: string) => {
         dispatch(registerDevice(deviceName, accessToken));

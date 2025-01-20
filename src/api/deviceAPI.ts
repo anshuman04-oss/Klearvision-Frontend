@@ -34,7 +34,7 @@ export const registerDevice = (deviceName: string, accessToken: string) => async
 
 export const removeDevice = (deviceId: UUID, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
-        const url = `${API_BASE_URL}/v1/device/register`;
+        const url = `${API_BASE_URL}/v1/device/deregister`;
         const response = await axios.post(url, {
             deviceId
         }, {
