@@ -58,4 +58,8 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     className?: string
 }
 
-export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps }
+interface hlsURL {
+    hlsURL: string
+}
+
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL }
