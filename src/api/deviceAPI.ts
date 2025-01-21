@@ -9,8 +9,7 @@ import { UUID } from "crypto";
 
 export const registerDevice = (deviceName: string, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
-        // ToDo - Only device name is required in request body
-        // ToDo - Handling access token using axios
+        // ToDo - Handling access token using axios - Not required to be handled here as passed as parameter
         // Login and register user is publicly available api (runs without access token) only. Other than that 
         // every api requires access token
         dispatch(deviceStatus({status: Status.LOADING}))

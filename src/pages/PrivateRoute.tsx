@@ -2,14 +2,11 @@
 // src/components/PrivateRoute.tsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { KVS_LOCAL_STORAGE_KEY, Status } from '../constants';
+import { Status } from '../constants';
 import Loading from '../components/Loading';
 import useAuth from '../hooks/useAuth';
 import { isTokenExpired } from '../helpers';
-
-interface PrivateRouteProps {
-  children: JSX.Element;
-}
+import { PrivateRouteProps } from '../types';
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const {status, isAuthenticated} = useAuth();

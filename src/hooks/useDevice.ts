@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { registerDevice, removeDevice } from "../api/deviceAPI";
 import { UUID } from "crypto";
 
+// TODO - Access token should be handled here.
+
 const useDevice = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { devices, status, error } = useSelector<RootState, DeviceState>((state: RootState) => state.device);
@@ -15,7 +17,7 @@ const useDevice = () => {
     if(devices) Object.keys(devices).forEach((deviceId: string) =>{
         deviceList.push(devices[deviceId])
     })
-    // Seemingly right for divices' list
+    // Seemingly right for devices' list
 
     let accessToken = "";
     

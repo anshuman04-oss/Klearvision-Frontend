@@ -5,7 +5,7 @@ import { AppDispatch } from "../app/store";
 import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/loginSlice";
 import { TokenDetails, User } from "../types";
 
-//TODO - Implement the fetchUser dispatch function
+//TODO - Implement the fetchUser dispatch function - Done
 export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch) => {
     const url = `${API_BASE_URL}/v1/`
   try {
@@ -27,9 +27,27 @@ export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch)
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
-  //TODO - Need to implement
+  //TODO - Need to implement  - Done 
+  const url = `${API_BASE_URL}/v1/device/register`
+
+  try {
+    const response = await axios.post(url, user, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log(response.data)
+    alert("User registered successfully");
+    dispatch(login({ email: user.email, password: user.password }));   // Sent to login page after successful registration
+  } catch (error) {
+    console.error("Error while registering ", error)
+  }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const userLogin = (username : string, password: string) => async (dispatch: AppDispatch) => {
     const url = `${API_BASE_URL}/v1/login`
@@ -58,6 +76,8 @@ export const userLogin = (username : string, password: string) => async (dispatc
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
   const url = `${API_BASE_URL}/v1/auth/renewAccessToken`
   try {
@@ -82,6 +102,8 @@ export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
     dispatch(loginError({errorData: error}))
   }
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const userLogout = () => async (dispatch: AppDispatch) => {
   try {

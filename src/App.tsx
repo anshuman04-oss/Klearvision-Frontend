@@ -16,7 +16,7 @@ const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 const DevicePage = React.lazy(() => import('./pages/DevicePage'));
 const StreamPage = React.lazy(() => import('./pages/StreamPage'));
-const HlsPlayer = React.lazy(() => import('./pages/HlsPlayer'));
+const HlsPlayer = React.lazy(() => import('./pages/HlsPlayerPage'));
 
 function App() {
 

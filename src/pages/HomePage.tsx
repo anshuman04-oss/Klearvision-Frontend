@@ -8,7 +8,7 @@ const HomePage : React.FC = (): ReactElement => {
     return (
         <div className="App">
             <Home />
-            <header className="App-header">
+            {/* <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>
                 Edit <code>src/App.tsx</code> and save to reload.
@@ -21,7 +21,7 @@ const HomePage : React.FC = (): ReactElement => {
                 >
                 Learn React
                 </a>
-            </header>
+            </header> */}
         </div>
     )
 }

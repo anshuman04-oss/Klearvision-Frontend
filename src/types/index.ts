@@ -9,8 +9,8 @@ interface User {
     userId?     : UUID | "" | undefined
     firstName   : string
     lastName    : string | undefined
-    phone       : number | string
     email       : string
+    phone       : number | string
     password    : string | undefined
 }
 
@@ -62,4 +62,13 @@ interface hlsURL {
     hlsURL: string
 }
 
-export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL }
+interface LoginFormData {
+    username: string
+    password: string
+}
+
+interface PrivateRouteProps {
+    children: JSX.Element;
+}
+
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps }

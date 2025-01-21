@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
-import { Button } from "../constants";
+import Button from "../Button";
 import { useDispatch } from "react-redux";
-import { logout } from "../features/loginSlice";
+import { logout } from "../../features/loginSlice";
 
 interface HlsPlayerProps {
   onLogout?: () => void; // Optional callback for logout functionality

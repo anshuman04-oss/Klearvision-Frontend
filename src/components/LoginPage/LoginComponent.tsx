@@ -1,21 +1,14 @@
 /* eslint-disable @typescript-eslint/no-wrapper-object-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-unused-vars */
-import {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-import { login as authLogin } from '../../features/loginSlice'
-import {useDispatch} from "react-redux"
 import {useForm} from "react-hook-form"
-import axios from 'axios'
 import API_BASE_URL, { Button, Input, Status } from '../../constants'
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
+import { LoginFormData } from '../../types'
 
-
-type LoginFormData = {
-    username: string
-    password: string
-}
+// I have put the login form data in the index file of the types folder
 
 function LoginComponent() {
 
