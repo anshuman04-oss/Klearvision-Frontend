@@ -1,23 +1,28 @@
 /* eslint-disable @typescript-eslint/no-wrapper-object-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Link, useNavigate} from 'react-router-dom'
-import {useForm} from "react-hook-form"
-import API_BASE_URL, { Button, Input, Status } from '../../constants'
+
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
 import { LoginFormData } from '../../types'
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router';
+import { Status } from '../../constants';
+import Button from '../Button';
+import Input from '../Input';
 
 // I have put the login form data in the index file of the types folder
 
 function LoginComponent() {
 
     const {register, handleSubmit} = useForm<LoginFormData>()
-    const {error, status, loginUser} = useAuth();
+    const {error, status, isAuthenticated, loginUser} = useAuth();
 
     const onSubmit = (data: LoginFormData) => {
         console.log('Form submitted', data)
-        loginUser(data.username, data.password)
+        if(!isAuthenticated && status !== Status.LOADING) {
+            loginUser(data.username, data.password)
+        }
     }
 
     return (

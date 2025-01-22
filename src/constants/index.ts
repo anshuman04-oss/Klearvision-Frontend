@@ -14,6 +14,7 @@ export enum Status {
 }
 
 export const KVS_LOCAL_STORAGE_KEY = "KVSToken";
+export const STREAM_URL = "<streamURL>"
 
 export { Container, LogoutBtn, Button, Input }
 
