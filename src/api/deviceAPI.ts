@@ -34,10 +34,9 @@ export const registerDevice = (deviceName: string, accessToken: string) => async
 
 export const removeDevice = (deviceId: UUID, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
-        const url = `${API_BASE_URL}/v1/device/register`;
-        const response = await axios.post(url, {
-            deviceId
-        }, {
+        const url = `${API_BASE_URL}/v1/device/deregister`;
+        const response = await axios.delete(url, {
+            data: { deviceId },
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
@@ -46,6 +45,28 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
         console.log(response);
         const data = response.data as Device;
         dispatch(deregister({deviceData : {deviceId}}))
+    } catch (error) {
+        console.log("Register device error: ", error);
+        dispatch(deviceError({errorData: error}))
+    }
+}
+
+export const fetchDevices = (accessToken: string) => async (dispatch: AppDispatch) => {
+    try {
+        dispatch(deviceStatus({status: Status.LOADING}))
+        const url = `${API_BASE_URL}/v1/device`;
+        const response = await axios.get(url,{
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        console.log(response);
+        const devices = response.data as { [key: string]: Device };
+        Object.keys(devices).forEach( (deviceId : string) => {
+            dispatch(register({deviceData : devices[deviceId]}))
+        });
+        
     } catch (error) {
         console.log("Register device error: ", error);
         dispatch(deviceError({errorData: error}))

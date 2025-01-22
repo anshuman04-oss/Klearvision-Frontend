@@ -33,6 +33,7 @@ interface Device {
     streamKey       : string
     deviceName      : string | undefined
     playBackUrl     : string
+    playBackToken   : string | undefined
 }
 
 interface DeviceState {

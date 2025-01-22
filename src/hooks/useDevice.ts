@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { Device, DeviceState, UserState } from "../types";
 import { logout } from "../features/loginSlice";
 import { useEffect } from "react";
-import { registerDevice, removeDevice } from "../api/deviceAPI";
+import { fetchDevices, registerDevice, removeDevice } from "../api/deviceAPI";
 import { UUID } from "crypto";
 
 const useDevice = () => {
@@ -25,17 +25,27 @@ const useDevice = () => {
             dispatch(logout());
         }
 	}, [])
+
+    useEffect(() => {
+		if(accessToken) {
+            deviceFetch();
+        }
+	}, [accessToken])
     
     
     const deviceRegister = (deviceName: string) => {
         dispatch(registerDevice(deviceName, accessToken));
     }
 
+    const deviceFetch = () => {
+        dispatch(fetchDevices(accessToken));
+    }
+
     const deviceRemove = (deviceId: UUID) => {
         dispatch(removeDevice(deviceId, accessToken))
     }
 
-    return { devices, deviceList, error, status, deviceRegister, deviceRemove }
+    return { devices, deviceList, error, status, deviceRegister, deviceRemove, deviceFetch }
 }
 
 export default useDevice
