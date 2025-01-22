@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-wrapper-object-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable @typescript-eslint/no-unused-vars */
-import {useState} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
-import { login as authLogin } from '../../features/loginSlice'
-import {useDispatch} from "react-redux"
+import {Link} from 'react-router-dom'
 import {useForm} from "react-hook-form"
-import axios from 'axios'
-import API_BASE_URL, { Button, Input, Status } from '../../constants'
+import { Button, Input, Status } from '../../constants'
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
 
@@ -20,11 +16,13 @@ type LoginFormData = {
 function LoginComponent() {
 
     const {register, handleSubmit} = useForm<LoginFormData>()
-    const {error, status, loginUser} = useAuth();
+    const {error, status, isAuthenticated, loginUser} = useAuth();
 
     const onSubmit = (data: LoginFormData) => {
         console.log('Form submitted', data)
-        loginUser(data.username, data.password)
+        if(!isAuthenticated && status !== Status.LOADING) {
+            loginUser(data.username, data.password)
+        }
     }
 
     return (
