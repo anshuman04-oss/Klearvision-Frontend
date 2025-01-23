@@ -6,6 +6,8 @@ import Loading from "../Loading";
 import { UUID } from "crypto";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { Tooltip } from "@mui/material";
 
 const DeviceList : React.FC<object> = () : ReactElement => {
     const [selectedDevice, setDevice] = useState<Device|undefined>(undefined)
@@ -21,6 +23,11 @@ const DeviceList : React.FC<object> = () : ReactElement => {
         navigate(`/player/${deviceId}`)
     }
 
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        alert("Copied to clipboard");
+    }
+
     console.log(`Selected Device = ${selectedDevice}`)
 
     return (
@@ -29,18 +36,47 @@ const DeviceList : React.FC<object> = () : ReactElement => {
             <ul>
                 {deviceList.map((device : Device) => (
                     <li key={device.deviceId} onClick={() => setDevice(device)} className="flex justify-between items-center mb-2 bg-gray-800 text-gray-50">
-                        <span>Device Id: {device.deviceId}</span>
-                        <span>Device Name: {device.deviceName}</span>
+                        {/* <span>Device Id: {device.deviceId}</span> */}
+                        {/* <span>Device Name: {device.deviceName}</span> */}
+                        <span className="font-bold">{device.deviceName}</span>
                         {selectedDevice?.deviceId === device.deviceId &&
+                        <div>
                             <div>
-                                <span>stream URL: {STREAM_URL}</span>
-                                <span>streamKey: {device.streamKey}</span>
-                                <Button variant="contained" onClick={() => handleStream(device.deviceId)}>Stream</Button>
+                                  <div className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">
+                                    <Tooltip title={STREAM_URL}>
+                                    <span className="truncate max-w-[150px] text-white">stream URL</span>
+                                    </Tooltip>
+                                    <Button 
+                                    variant="contained" 
+                                    color="primary" 
+                                    onClick={() => copyToClipboard(STREAM_URL)}
+                                    >
+                                    <ContentCopyIcon fontSize="small" />
+                                    </Button>
+                                </div>
+                                {/* <span>streamKey: {device.streamKey}</span> */}
                             </div>
+
+                            <div className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">
+                                <Tooltip title={device.streamKey}>
+                                <span className="truncate max-w-[150px] text-white">streamKey</span>
+                                </Tooltip>
+                                <Button 
+                                variant="contained" 
+                                color="primary" 
+                                onClick={() => copyToClipboard(device.streamKey)}
+                                >
+                                <ContentCopyIcon fontSize="small" />
+                                </Button>
+                            </div>
+                        </div>
                         }
-                        <button onClick={() => handleRemove(device.deviceId)} className="bg-red-600 py-1 px-2 rounded text-white">
-                            Remove
-                        </button>
+                        <div>
+                            <Button variant="contained" onClick={() => handleStream(device.deviceId)}>Stream</Button>
+                            <Button onClick={() => handleRemove(device.deviceId)} variant="contained" color="error" className="py-1 px-2 rounded text-white">
+                                Remove
+                            </Button>
+                        </div>
                     </li>
                 ))}
             </ul>
