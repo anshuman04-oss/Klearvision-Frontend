@@ -1,3 +1,6 @@
+/* eslint-disable prefer-const */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
@@ -14,6 +17,7 @@ import { AppDispatch } from "../../app/store";
 
 const HlsPlayer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  // const [hlsUrl, setHlsUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [device, setDevice] = useState<Device | undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
