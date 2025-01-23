@@ -1,6 +1,3 @@
-// ToDo - All models should be in types folder
-// For ex, all the login related models should be in login.ts under types folder.
-// Impoert and export all the types.
 import { UUID } from "crypto";
 import { Status } from "../constants";
 import React from "react";
@@ -34,6 +31,7 @@ interface Device {
     deviceName      : string | undefined
     playBackUrl     : string
     playBackToken   : string | undefined
+    tokenExpiry     : number | undefined
 }
 
 interface DeviceState {

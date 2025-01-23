@@ -10,9 +10,6 @@ import { PlaybackTokenContent } from "../types";
 
 export const registerDevice = (deviceName: string, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
-        // ToDo - Handling access token using axios - Not required to be handled here as passed as parameter
-        // Login and register user is publicly available api (runs without access token) only. Other than that 
-        // every api requires access token
         dispatch(deviceStatus({status: Status.LOADING}))
         const url = `${API_BASE_URL}/v1/device/register`;
         const response = await axios.post(url, {
@@ -53,9 +50,6 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
 
 export const fetchPlaybackToken = (deviceId: string, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
-        // ToDo - Handling access token using axios - Not required to be handled here as passed as parameter
-        // Login and register user is publicly available api (runs without access token) only. Other than that 
-        // every api requires access token
         dispatch(deviceStatus({status: Status.LOADING}))
         const url = `${API_BASE_URL}/v1/auth/playbackToken`;
         const response = await axios.post(url, {
@@ -66,10 +60,10 @@ export const fetchPlaybackToken = (deviceId: string, accessToken: string) => asy
               'Authorization': `Bearer ${accessToken}`
             }
           });
-        console.log(response);
-        localStorage.setItem("playbackToken", response.data.playBackToken);
-        const data = response.data as PlaybackTokenContent;
-        dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId}))
+          console.log(response);
+          const data = response.data as PlaybackTokenContent;
+          const tokenExpiry = Date.now()/1000 + parseInt(data.expiration.replace(/\D/g, ''), 10);	
+          dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId, tokenExpiry}))
     } catch (error) {
         console.log("Error fetching Playback token (deviceAPI): ", error);
         dispatch(deviceError({errorData: error}))

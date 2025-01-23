@@ -17,7 +17,6 @@ import { AppDispatch } from "../../app/store";
 
 const HlsPlayer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // const [hlsUrl, setHlsUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [device, setDevice] = useState<Device | undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -35,8 +34,13 @@ const HlsPlayer: React.FC = () => {
   }, [devices, deviceId]);
 
   useEffect(() => {
-    if (accessToken && device && !device.playBackToken) {
-      dispatch(fetchPlaybackToken(device.deviceId, accessToken));
+    if(device) {
+      let needToFetchToken = false;
+      if(!device.playBackToken) needToFetchToken = true;
+      if(!device.tokenExpiry || device.tokenExpiry <= Date.now()/1000) needToFetchToken = true;
+      if (accessToken && needToFetchToken) {
+        dispatch(fetchPlaybackToken(device.deviceId, accessToken));
+      }
     }
   }, [device, accessToken, dispatch]);
 
