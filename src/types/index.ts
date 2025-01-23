@@ -75,7 +75,7 @@ interface PrivateRouteProps {
 interface PlaybackTokenContent {
     deviceId: string
     playBackUrl: string
-    playBackToken: string
+    playbackAccessToken: string
     expiration: number
 }
 

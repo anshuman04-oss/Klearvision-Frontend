@@ -2,22 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
-import Button from "../Button";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../features/loginSlice";
-import { RootState } from "@reduxjs/toolkit/query";
-import { DeviceState } from "../../types";
+import { useDispatch } from "react-redux";
+import { Device } from "../../types";
 import { PLAYBACK_URL } from "../../constants";
-import { UUID } from "crypto";
-import API_BASE_URL from "../../constants";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
 import CommonFilters from "../commonFilters/CommonFilters";
-import Dropdown from "../Dropdown";
 import DropdownSide from "../DropdownSide";
 import FogFilter from "../fog/FogFilter";
 import RainFilter from "../rainFilter/RainFilter";
+import useAuth from "../../hooks/useAuth";
+import useDevice from "../../hooks/useDevice";
+import { AppDispatch } from "../../app/store";
 
 // TODO: Add with base page.
 // TODO: Before commiting, github -> PR -> File change
@@ -29,23 +25,34 @@ import RainFilter from "../rainFilter/RainFilter";
 // To be handled later.
 
 const HlsPlayer: React.FC= () => {
+  const dispatch = useDispatch<AppDispatch>();
+  
   // const [hlsUrl, setHlsUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [device, setDevice] = useState<Device|undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsInstance = useRef<Hls | null>(null);
   let playbackURLToken = `${PLAYBACK_URL}?token=`;
-  const accessToken = "";
   const { deviceId } = useParams<{ deviceId: string }>();
   const [filter, setFilter] = useState<string>("Fog");
+  const {accessToken} = useAuth();
+  const {devices} = useDevice();
+  console.log("device Id : ", deviceId)
+
 
   // Call API for playback token 
 
   useEffect(() => {
-    fetchPlaybackToken(deviceId as unknown as UUID, accessToken);
-    const playbackToken = localStorage.getItem("playbackToken");
-    playbackURLToken += playbackToken;
-    console.log("Playback URL Token: ", playbackURLToken);
-  }, []);
+    if(devices && deviceId) {
+      setDevice(devices[deviceId])
+    }
+  }, [devices, deviceId]);
+
+  useEffect(() => {
+    if(accessToken && device && !device.playBackToken) {
+      dispatch(fetchPlaybackToken(device.deviceId, accessToken));
+    }
+  }, [device, accessToken]);
 
   // fine
   useEffect(() => {
@@ -80,7 +87,7 @@ const HlsPlayer: React.FC= () => {
           videoRef.current?.play();
         });
 
-        hls.on(Hls.Events.ERROR, (event, data) => {
+        hls.on(Hls.Events.ERROR, (event: any, data : any) => {
           console.error("HLS Error:", data);
           if (data.fatal) {
             switch (data.type) {
@@ -111,6 +118,7 @@ const HlsPlayer: React.FC= () => {
 
   // const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   // };
+  console.log("device : ", device)
 
   return (
     <div className="hls-player-container" style={{ textAlign: "center", padding: "20px" }}>
@@ -121,18 +129,23 @@ const HlsPlayer: React.FC= () => {
 
         <div className="video-container" style={{ alignContent: "center", justifyContent: "center", display:"flex", marginTop: "30px", maxWidth: "1000px", marginLeft: "50px", position: "relative" }}>
           {isPlaying && <h2>Stream is now playing:</h2>}
-          <video
-            ref={videoRef}
-            controls
-            style={{
-              marginLeft: "375px",
-              width: "50%",
-              height: "auto",
-              borderRadius: "8px",
-              border: "1px white solid",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            }}
-          />
+          {
+            device && device.playBackUrl && device.playBackToken &&
+            <video
+              ref={videoRef}
+              controls
+              src={`${device.playBackUrl}?token=${device.playBackToken}`}
+              style={{
+                marginLeft: "375px",
+                width: "50%",
+                height: "auto",
+                borderRadius: "8px",
+                border: "1px white solid",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              }}
+            />
+          }
+          
         </div>
 
         {/* For Fog or Rain */}

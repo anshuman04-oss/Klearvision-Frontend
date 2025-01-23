@@ -68,7 +68,7 @@ export const fetchPlaybackToken = (deviceId: string, accessToken: string) => asy
           });
         console.log(response);
         const data = response.data as PlaybackTokenContent;
-        dispatch(setPlaybackToken({playbackToken : data.playBackToken, deviceId}))
+        dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId}))
     } catch (error) {
         console.log("Register device error: ", error);
         dispatch(deviceError({errorData: error}))
