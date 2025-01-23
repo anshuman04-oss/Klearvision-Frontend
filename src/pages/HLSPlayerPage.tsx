@@ -1,5 +1,5 @@
-import React from 'react'
 import HlsPlayer from '../components/hlsPlayer/HLSPlayer'
+import withBasePage from './withBasePage';
 
 function HlsPlayerPage() {
 
@@ -10,4 +10,4 @@ function HlsPlayerPage() {
   )
 }
 
-export default HlsPlayerPage
+export default withBasePage(HlsPlayerPage);

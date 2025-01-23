@@ -16,7 +16,7 @@ const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 const DevicePage = React.lazy(() => import('./pages/DevicePage'));
 const StreamPage = React.lazy(() => import('./pages/StreamPage'));
-const HlsPlayer = React.lazy(() => import('./pages/HLSPlayerPage'));
+const HLSPlayerPage = React.lazy(() => import('./pages/HLSPlayerPage'));
 
 function App() {
 
@@ -51,7 +51,6 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/hlsPlayer/:deviceId" element={<HlsPlayer />} />
             <Route
               path="/profile"
               element={
@@ -75,6 +74,14 @@ function App() {
                   <DevicePage />
                   {/* <HlsPlayer /> */}
                   {/* <StreamPage /> */}
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/hlsPlayer/:deviceId"
+              element={
+                <PrivateRoute>
+                  <HLSPlayerPage />
                 </PrivateRoute>
               }
             />
