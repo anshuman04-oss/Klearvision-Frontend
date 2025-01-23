@@ -3,9 +3,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Device, DeviceState } from "../types";
 import { Status } from "../constants";
-// import { registerDevice, removeDevice } from "../api/deviceAPI";
-// import { Status } from "../constants";
-// import { DeviceState } from "../types";
 
 const initialState : DeviceState = {
     devices: {},
@@ -29,6 +26,11 @@ const deviceSlice = createSlice({
             });
             state.status = Status.SUCCEEDED
         },
+        setPlaybackToken: (state, action) => {
+            const {deviceId, playBackToken} = action.payload;
+            state.devices[deviceId].playBackToken = playBackToken;
+            state.status = Status.SUCCEEDED
+        },
         deviceError: (state, action) => {
             state.error = action.payload.errorData
             state.status = Status.FAILED
@@ -39,7 +41,7 @@ const deviceSlice = createSlice({
     }
 })
 
-export const {register, deregister, deviceError, deviceStatus} = deviceSlice.actions;
+export const {register, deregister, deviceError, deviceStatus, setPlaybackToken} = deviceSlice.actions;
 
 export default deviceSlice.reducer
 

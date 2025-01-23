@@ -44,7 +44,7 @@ function Header() {
         },
         {
             name: "Stream",
-            slug: "/stream",
+            slug: "/hlsPlayer",
             active: authStatus
         }
     ]

@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { DropdownProps } from '../types'
+import React from 'react'
 
-export default function Dropdown({
-  mainElement = "mainElement",
-  sideElements = [] as string[],
-}: { mainElement?: string; sideElements?: string[] }) {
+const Dropdown: React.FC<DropdownProps> = ({
+  sideElements = [],
+  onChange = (e) => {},
+  ...props
+}) => {
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative inline-block text-left" {...props}>
       <div>
         <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-          {mainElement}
+          {sideElements[0]}
           <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
         </MenuButton>
       </div>
@@ -36,3 +39,5 @@ export default function Dropdown({
     </Menu>
   )
 }
+
+export default Dropdown;

@@ -1,5 +1,5 @@
 import React from 'react'
-import HlsPlayer from '../components/hlsPlayer/HlsPlayer'
+import HlsPlayer from '../components/hlsPlayer/HLSPlayer'
 
 function HlsPlayerPage() {
 

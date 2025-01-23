@@ -5,7 +5,7 @@ function DeviceContainer() {
 
     return (
         <>
-        <div className="py-10">
+        <div className="py-10 relative">
         <div className="flex items-center justify-center my-10">
             <h1 className="text-white font-bold text-6xl items-center">Devices</h1>
         </div>

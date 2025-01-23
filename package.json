@@ -10,10 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.0",
-    "@heroicons/react": "^2.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
     "@mui/material": "^6.4.1",
     "@mui/styles": "^6.4.0",
     "@reduxjs/toolkit": "^2.5.0",

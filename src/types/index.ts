@@ -72,4 +72,17 @@ interface PrivateRouteProps {
     children: JSX.Element;
 }
 
-export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps }
+interface PlaybackTokenContent {
+    deviceId: string
+    playBackUrl: string
+    playBackToken: string
+    expiration: number
+}
+
+interface DropdownProps {
+    mainElement?: string;
+    sideElements?: string[];
+    onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps, PlaybackTokenContent, DropdownProps }

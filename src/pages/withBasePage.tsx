@@ -9,7 +9,7 @@ export default function withBasePage<P extends {}>(ChildComponent: React.Compone
             <div className="base-page">
                 <Header />
                 <ChildComponent {...props} />
-                {/* <Footer /> */}
+                <Footer />
             </div>
         );
     };

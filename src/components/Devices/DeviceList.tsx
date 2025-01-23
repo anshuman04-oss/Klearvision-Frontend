@@ -5,10 +5,12 @@ import { Status, STREAM_URL } from "../../constants";
 import Loading from "../Loading";
 import { UUID } from "crypto";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
-const DeviceList : React.FC<{}> = () : ReactElement => {
+const DeviceList : React.FC<object> = () : ReactElement => {
     const [selectedDevice, setDevice] = useState<Device|undefined>(undefined)
     const { deviceList, status, error, deviceRemove } = useDevice();
+    const navigate = useNavigate();
 
     const handleRemove = (deviceId: UUID) => {
         deviceRemove(deviceId)
@@ -16,6 +18,7 @@ const DeviceList : React.FC<{}> = () : ReactElement => {
 
     const handleStream = (deviceId: UUID) => {
         //TODO-handle Stream click
+        navigate(`/hlsPlayer/${deviceId}`)
     }
 
     console.log(`Selected Device = ${selectedDevice}`)
@@ -30,7 +33,7 @@ const DeviceList : React.FC<{}> = () : ReactElement => {
                         <span>Device Name: {device.deviceName}</span>
                         {selectedDevice?.deviceId === device.deviceId &&
                             <div>
-                                <span>stream URL : {STREAM_URL}</span>
+                                <span>stream URL: {STREAM_URL}</span>
                                 <span>streamKey: {device.streamKey}</span>
                                 <Button variant="contained" onClick={() => handleStream(device.deviceId)}>Stream</Button>
                             </div>

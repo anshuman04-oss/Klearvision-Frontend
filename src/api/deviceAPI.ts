@@ -4,8 +4,9 @@ import axios from "axios";
 import API_BASE_URL, { Status } from "../constants";
 import { Device } from "../types";
 import { AppDispatch } from "../app/store";
-import { deregister, deviceError, deviceStatus, register } from "../features/deviceSlice";
+import { deregister, deviceError, deviceStatus, register, setPlaybackToken } from "../features/deviceSlice";
 import { UUID } from "crypto";
+import { PlaybackTokenContent } from "../types";
 
 export const registerDevice = (deviceName: string, accessToken: string) => async (dispatch: AppDispatch) => {
     try {
@@ -50,6 +51,30 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
     }
 }
 
+export const fetchPlaybackToken = (deviceId: string, accessToken: string) => async (dispatch: AppDispatch) => {
+    try {
+        // ToDo - Handling access token using axios - Not required to be handled here as passed as parameter
+        // Login and register user is publicly available api (runs without access token) only. Other than that 
+        // every api requires access token
+        dispatch(deviceStatus({status: Status.LOADING}))
+        const url = `${API_BASE_URL}/v1/auth/playbackToken`;
+        const response = await axios.post(url, {
+            deviceId
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+        console.log(response);
+        const data = response.data as PlaybackTokenContent;
+        dispatch(setPlaybackToken({playbackToken : data.playBackToken, deviceId}))
+    } catch (error) {
+        console.log("Register device error: ", error);
+        dispatch(deviceError({errorData: error}))
+    }
+}
+
 export const fetchDevices = (accessToken: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(deviceStatus({status: Status.LOADING}))
@@ -65,7 +90,6 @@ export const fetchDevices = (accessToken: string) => async (dispatch: AppDispatc
         Object.keys(devices).forEach( (deviceId : string) => {
             dispatch(register({deviceData : devices[deviceId]}))
         });
-        
     } catch (error) {
         console.log("Register device error: ", error);
         dispatch(deviceError({errorData: error}))
