@@ -1,10 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
 import { Device } from "../../types";
-import { PLAYBACK_URL } from "../../constants";
 import { useParams } from "react-router-dom";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
 import CommonFilters from "../commonFilters/CommonFilters";
@@ -15,65 +12,54 @@ import useAuth from "../../hooks/useAuth";
 import useDevice from "../../hooks/useDevice";
 import { AppDispatch } from "../../app/store";
 
-// TODO: Add with base page.
-// TODO: Before commiting, github -> PR -> File change
-
-
-// Get playback url and token from redux store,
-// Put url?token=token in video src
-
-// To be handled later.
-
-const HlsPlayer: React.FC= () => {
+const HlsPlayer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  
-  // const [hlsUrl, setHlsUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [device, setDevice] = useState<Device|undefined>(undefined);
+  const [device, setDevice] = useState<Device | undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsInstance = useRef<Hls | null>(null);
-  let playbackURLToken = `${PLAYBACK_URL}?token=`;
-  const { deviceId } = useParams<{ deviceId: string }>();
   const [filter, setFilter] = useState<string>("Fog");
-  const {accessToken} = useAuth();
-  const {devices} = useDevice();
-  console.log("device Id : ", deviceId)
 
-
-  // Call API for playback token 
+  const { deviceId } = useParams<{ deviceId: string }>();
+  const { accessToken } = useAuth();
+  const { devices } = useDevice();
 
   useEffect(() => {
-    if(devices && deviceId) {
-      setDevice(devices[deviceId])
+    if (devices && deviceId) {
+      setDevice(devices[deviceId]);
     }
   }, [devices, deviceId]);
 
   useEffect(() => {
-    if(accessToken && device && !device.playBackToken) {
+    if (accessToken && device && !device.playBackToken) {
       dispatch(fetchPlaybackToken(device.deviceId, accessToken));
     }
-  }, [device, accessToken]);
+  }, [device, accessToken, dispatch]);
 
-  // fine
   useEffect(() => {
     return () => {
       // Cleanup HLS instance on unmount
       if (hlsInstance.current) {
         hlsInstance.current.destroy();
+        hlsInstance.current = null;
       }
     };
   }, []);
 
   const handlePlay = () => {
-    if (!playbackURLToken.trim()) return;
+    if (!device?.playBackUrl || !device.playBackToken) {
+      console.error("Playback URL or token is missing.");
+      return;
+    }
 
-    // if (hlsInstance.current) {
-    //   hlsInstance.current.destroy();
-    //   hlsInstance.current = null;
-    // }
+    const playbackURLToken = `${device.playBackUrl}?token=${device.playBackToken}`;
+
+    if (hlsInstance.current) {
+      hlsInstance.current.destroy();
+      hlsInstance.current = null;
+    }
 
     if (Hls.isSupported()) {
-      console.log("HLS.js is supported");
       const hls = new Hls();
       hlsInstance.current = hls;
 
@@ -87,7 +73,7 @@ const HlsPlayer: React.FC= () => {
           videoRef.current?.play();
         });
 
-        hls.on(Hls.Events.ERROR, (event: any, data : any) => {
+        hls.on(Hls.Events.ERROR, (event, data) => {
           console.error("HLS Error:", data);
           if (data.fatal) {
             switch (data.type) {
@@ -114,143 +100,67 @@ const HlsPlayer: React.FC= () => {
     } else {
       console.error("HLS is not supported in this browser.");
     }
-  }
-
-  // const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  // };
-  console.log("device : ", device)
+  };
 
   return (
-    <div className="hls-player-container" style={{ textAlign: "center", padding: "20px" }}>
-      <h1
-        className="text-gray-50 text-4xl font-bold mt-10"
+    <div
+      className="hls-player-container"
+      style={{ textAlign: "center", padding: "20px" }}
+    >
+      <h1 className="text-gray-50 text-4xl font-bold mt-10">Playing Your Video</h1>
+
+      <div
+        className="video-container"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "30px",
+          maxWidth: "1000px",
+          position: "relative",
+        }}
       >
-        Playing Your Video</h1>
+        {isPlaying && <h2>Stream is now playing:</h2>}
+        {device && device.playBackUrl && device.playBackToken && (
+          <video
+            ref={videoRef}
+            controls
+            style={{
+              width: "50%",
+              height: "auto",
+              borderRadius: "8px",
+              border: "1px solid white",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            }}
+          />
+        )}
+      </div>
 
-        <div className="video-container" style={{ alignContent: "center", justifyContent: "center", display:"flex", marginTop: "30px", maxWidth: "1000px", marginLeft: "50px", position: "relative" }}>
-          {isPlaying && <h2>Stream is now playing:</h2>}
-          {
-            device && device.playBackUrl && device.playBackToken &&
-            <video
-              ref={videoRef}
-              controls
-              src={`${device.playBackUrl}?token=${device.playBackToken}`}
-              style={{
-                marginLeft: "375px",
-                width: "50%",
-                height: "auto",
-                borderRadius: "8px",
-                border: "1px white solid",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-              }}
-            />
-          }
-          
-        </div>
+      <DropdownSide
+        sideElements={["Fog", "Rain"]}
+        onChange={(e) => setFilter(e.target.value)}
+      />
 
-        {/* For Fog or Rain */}
-        <DropdownSide sideElements={["Fog", "Rain"]} 
-          onChange={(e) => {
-            useEffect(() => (setFilter(e.target.value)))
-          }}
-        />
-        <button
-          style={{
-            padding: "5px 10px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "2px solid #4CAF50",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginTop: "10px",
-            marginLeft: "2px",
-            fontWeight: "bold",
-          }}
-          onClick={handlePlay}
-        >
-          Play Stream
-        </button>
-        {/* To conditionally place filters */}
-        {filter === "Fog" && <FogFilter />}
-        {filter === "Rain" && <RainFilter />}
-        <CommonFilters />
+      <button
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "2px solid #4CAF50",
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginTop: "10px",
+          fontWeight: "bold",
+        }}
+        onClick={handlePlay}
+      >
+        Play Stream
+      </button>
+
+      {filter === "Fog" && <FogFilter />}
+      {filter === "Rain" && <RainFilter />}
+      <CommonFilters />
     </div>
   );
 };
 
 export default HlsPlayer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react'
-// import { Link } from 'react-router-dom'
-// import LogoutPage from '../../pages/LogoutPage'
-// import Input from '../Input'
-// import Button from '../Button'
-// import { Form, useForm } from 'react-hook-form'
-// import { playbackURLToken } from '../../types'
-
-// function HlsPlayer() {
-
-//     const [playbackURLToken, setplaybackURLToken] = React.useState('');
-
-//     const { register, handleSubmit, formState: { errors } } = useForm<playbackURLToken>();
-
-//     return (
-//         <>
-//             <h1>HLS Stream Player</h1>
-
-//             {/* A Logout button to be added */}
-
-//             <Form
-//                 onSubmit={handleSubmit(onSubmit)}
-//             >
-//                 <Input 
-//                     {...register("playbackURLToken", { required: "URL is required" })}
-//                     type="text"
-//                     name="playbackURLToken"
-//                     placeholder="Enter .m3u8 URL"
-//                     className="w-full p-12 mb-20 border border-2 border-gray-300 border-radius-4 text-black text-base"
-//                 />
-
-//                 {errors.playbackURLToken && <p className="text-red-500">{errors.playbackURLToken.message}</p>}
-
-//                 <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-//                     Submit
-//                 </button>
-//             </Form>
-//         </>
-//     )
-// }
-
-// export default HlsPlayer

@@ -78,7 +78,7 @@ function App() {
               }
             />
             <Route
-              path="/hlsPlayer/:deviceId"
+              path="/player/:deviceId"
               element={
                 <PrivateRoute>
                   <HLSPlayerPage />

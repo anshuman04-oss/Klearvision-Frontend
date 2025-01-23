@@ -18,7 +18,7 @@ const DeviceList : React.FC<object> = () : ReactElement => {
 
     const handleStream = (deviceId: UUID) => {
         //TODO-handle Stream click
-        navigate(`/hlsPlayer/${deviceId}`)
+        navigate(`/player/${deviceId}`)
     }
 
     console.log(`Selected Device = ${selectedDevice}`)
