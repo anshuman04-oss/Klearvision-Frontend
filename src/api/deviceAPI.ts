@@ -67,9 +67,9 @@ export const fetchPlaybackToken = (deviceId: string, accessToken: string) => asy
             }
           });
         console.log(response);
-        localStorage.setItem("playbackToken", response.data.playBackToken);
         const data = response.data as PlaybackTokenContent;
-        dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId}))
+        const tokenExpiry = Date.now()/1000 + parseInt(data.expiration.replace(/\D/g, ''), 10);	
+        dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId, tokenExpiry}))
     } catch (error) {
         console.log("Error fetching Playback token (deviceAPI): ", error);
         dispatch(deviceError({errorData: error}))

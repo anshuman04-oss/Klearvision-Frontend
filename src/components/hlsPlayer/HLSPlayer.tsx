@@ -1,6 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
@@ -9,15 +6,14 @@ import { useParams } from "react-router-dom";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
 import CommonFilters from "../commonFilters/CommonFilters";
 import DropdownSide from "../DropdownSide";
-import FogFilter from "../fog/FogFilter";
-import RainFilter from "../rainFilter/RainFilter";
 import useAuth from "../../hooks/useAuth";
 import useDevice from "../../hooks/useDevice";
 import { AppDispatch } from "../../app/store";
+import FogFilter from "./filters/FogFilter";
+import RainFilter from "./filters/RainFilter";
 
 const HlsPlayer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // const [hlsUrl, setHlsUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [device, setDevice] = useState<Device | undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -35,10 +31,15 @@ const HlsPlayer: React.FC = () => {
   }, [devices, deviceId]);
 
   useEffect(() => {
-    if (accessToken && device && !device.playBackToken) {
-      dispatch(fetchPlaybackToken(device.deviceId, accessToken));
+    if(device) {
+      let needToFetchToken = false;
+      if(!device.playBackToken) needToFetchToken = true;
+      if(!device.tokenExpiry || device.tokenExpiry <= Date.now()/1000) needToFetchToken = true;
+      if (accessToken && needToFetchToken) {
+        dispatch(fetchPlaybackToken(device.deviceId, accessToken));
+      }
     }
-  }, [device, accessToken, dispatch]);
+  }, [device, accessToken]);
 
   useEffect(() => {
     return () => {

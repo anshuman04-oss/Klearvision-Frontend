@@ -34,6 +34,7 @@ interface Device {
     deviceName      : string | undefined
     playBackUrl     : string
     playBackToken   : string | undefined
+    tokenExpiry     : number | undefined
 }
 
 interface DeviceState {
@@ -76,7 +77,7 @@ interface PlaybackTokenContent {
     deviceId: string
     playBackUrl: string
     playbackAccessToken: string
-    expiration: number
+    expiration: string
 }
 
 interface DropdownProps {

@@ -27,8 +27,9 @@ const deviceSlice = createSlice({
             state.status = Status.SUCCEEDED
         },
         setPlaybackToken: (state, action) => {
-            const {deviceId, playBackToken} = action.payload;
+            const {deviceId, playBackToken, tokenExpiry} = action.payload;
             state.devices[deviceId].playBackToken = playBackToken;
+            state.devices[deviceId].tokenExpiry = tokenExpiry;
             state.status = Status.SUCCEEDED
         },
         deviceError: (state, action) => {
