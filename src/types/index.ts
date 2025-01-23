@@ -74,7 +74,7 @@ interface PlaybackTokenContent {
     deviceId: string
     playBackUrl: string
     playbackAccessToken: string
-    expiration: number
+    expiration: string
 }
 
 interface DropdownProps {
