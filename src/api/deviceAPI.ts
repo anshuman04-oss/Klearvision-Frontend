@@ -60,10 +60,10 @@ export const fetchPlaybackToken = (deviceId: string, accessToken: string) => asy
               'Authorization': `Bearer ${accessToken}`
             }
           });
-          console.log(response);
-          const data = response.data as PlaybackTokenContent;
-          const tokenExpiry = Date.now()/1000 + parseInt((data.expiration).replace(/\D/g, ''), 10);	
-          dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId, tokenExpiry}))
+        console.log(response);
+        const data = response.data as PlaybackTokenContent;
+        const tokenExpiry = Date.now()/1000 + parseInt(data.expiration.replace(/\D/g, ''), 10);	
+        dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId, tokenExpiry}))
     } catch (error) {
         console.log("Error fetching Playback token (deviceAPI): ", error);
         dispatch(deviceError({errorData: error}))

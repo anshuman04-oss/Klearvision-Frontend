@@ -2,8 +2,8 @@
 import axios from "axios";
 import API_BASE_URL, { Status } from "../constants";
 import { AppDispatch } from "../app/store";
-import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/loginSlice";
-import { TokenDetails, User } from "../types";
+import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/userSlice";
+import { TokenDetails, User, SignUpFormData } from "../types";
 
 //TODO - Implement the fetchUser dispatch function - Done
 export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch) => {
@@ -29,7 +29,7 @@ export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
+export const registerUser = (user : SignUpFormData) => async (dispatch : AppDispatch) => {
   //TODO - Need to implement  - Done 
   const url = `${API_BASE_URL}/v1/device/register`
 
@@ -40,7 +40,7 @@ export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
       }
     })
     console.log(response.data)
-    alert("User registered successfully");
+    if(response.status === 200) alert("User registered successfully");
     dispatch(login({ email: user.email, password: user.password }));   // Sent to login page after successful registration
   } catch (error) {
     console.error("Error while registering ", error)

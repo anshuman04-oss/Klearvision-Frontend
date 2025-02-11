@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit"
 import { UserState } from "../types"
 import { KVS_LOCAL_STORAGE_KEY, Status } from "../constants";
-// import { validateUser } from "../api/authAPI";
-// import { Status } from "../constants";
-// import { User, UserState } from "../types";
 
 // ToDo - Access token and expiry time should be stored in redux store.
-
 
 const initialState : UserState = {
     userDetails: null,
@@ -20,10 +15,14 @@ const initialState : UserState = {
     error: null
 };
 
-const loginSlice = createSlice({
+const userSlice = createSlice({
     name: "login",
     initialState,
     reducers: {
+        // signupUser: (state, action) => {
+        //     state.userDetails = action.payload.userData
+        //     state.status = Status.SUCCEEDED
+        // },
         login: (state, action) => {
             state.tokenDetails = action.payload.tokenData
             console.log("setting kvsToken", state.tokenDetails, action.payload)
@@ -52,9 +51,9 @@ const loginSlice = createSlice({
     }
 })
 
-export const { login, logout, fetchUserDetails, loginError, loginStatus } = loginSlice.actions;
+export const { login, logout, fetchUserDetails, loginError, loginStatus, signupUser } = userSlice.actions;
 
-export default loginSlice.reducer;
+export default userSlice.reducer;
 
 
 

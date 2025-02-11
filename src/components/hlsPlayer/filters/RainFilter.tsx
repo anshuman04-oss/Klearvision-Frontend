@@ -1,5 +1,4 @@
 import { Slider } from '@mui/material'
-import React from 'react'
 
 function RainFilter() {
     const filters = ["Threshold", "Brightness", "Post Enhancement"]

@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { Device, DeviceState, UserState } from "../types";
-import { logout } from "../features/loginSlice";
+import { logout } from "../features/userSlice";
 import { useEffect } from "react";
 import { fetchDevices, registerDevice, removeDevice } from "../api/deviceAPI";
 import { UUID } from "crypto";

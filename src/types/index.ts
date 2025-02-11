@@ -83,4 +83,12 @@ interface DropdownProps {
     onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps, PlaybackTokenContent, DropdownProps }
+type SignUpFormData = {
+    firstName   : string
+    lastName    : string | undefined
+    email       : number | string
+    phone       : string
+    password    : string | undefined
+}
+
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps, PlaybackTokenContent, DropdownProps, SignUpFormData }
