@@ -66,20 +66,28 @@ const HlsPlayer: React.FC = () => {
         return;
       }
 
+      // console.log("Inside handleStartStream");
+
       const constraints = {
-        video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          frameRate: { ideal: 30 }
-        },
-        audio: true
+        // video: {
+        //   width: { ideal: 1280 },
+        //   height: { ideal: 720 },
+        //   frameRate: { ideal: 30 }
+        // },
+        audio: true,
       };
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
 
+      console.log(mediaStream);
+      // Stream is null now
+      // mediaStream is not null
+
       const newSocket = new WebSocket('wss://43.204.103.160/ws/');
       setSocket(newSocket);
+
+      console.log(newSocket);
 
       newSocket.onopen = () => {
         console.log('✅ WebSocket connection established.');
