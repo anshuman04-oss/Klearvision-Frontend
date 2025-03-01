@@ -11,8 +11,6 @@ import { Status } from '../../constants';
 import Button from '../Button';
 import Input from '../Input';
 
-// I have put the login form data in the index file of the types folder
-
 function LoginComponent() {
 
     const {register, handleSubmit} = useForm<LoginFormData>()

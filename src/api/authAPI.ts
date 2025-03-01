@@ -116,9 +116,6 @@ export const userLogout = () => async (dispatch: AppDispatch) => {
   }
 };
 
-// ToDo - Camel case for all the var names - last
-// ToDo - If the user directly comes to some other page like stream, redirect to login.
-// If already authorized, login route will always redirect to home.
 
 
 
@@ -138,33 +135,3 @@ export const userLogout = () => async (dispatch: AppDispatch) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import axios from "axios";
-// import API_BASE_URL from "../constants/index";
-
-// const api = axios.create({
-//     baseURL: API_BASE_URL,
-//     headers: {
-//         "Content-Type": "application/json",
-//     }
-// })
-
-// export default api;

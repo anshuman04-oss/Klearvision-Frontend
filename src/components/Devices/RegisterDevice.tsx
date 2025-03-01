@@ -10,7 +10,7 @@ const RegisterDevice : React.FC<{}> = () : ReactElement => {
     const { deviceList, status, error, deviceRegister } = useDevice();
 
     const handleRegister = () => {
-        if(!Boolean(deviceName)) {
+        if(!deviceName) {
             window.alert("Device Name is Empty!!!")
             return;
         }

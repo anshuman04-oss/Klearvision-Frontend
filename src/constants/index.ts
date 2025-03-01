@@ -1,11 +1,10 @@
 const API_BASE_URL = 'https://8xk6jj6h71.execute-api.ap-south-1.amazonaws.com/api'
 
 import Container from "../container/Container";
-import LogoutBtn from "../components/Header/LogoutBtn";
+import LogoutBtn from "../components/header/LogoutBtn";
 import Button from "../components/Button";
 import Input from "../components/Input";
 
-// ToDo - Convert to all caps for status
 export enum Status {
     IDLE = "IDLE",
     LOADING = "LOADING",

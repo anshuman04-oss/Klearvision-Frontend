@@ -19,10 +19,6 @@ const userSlice = createSlice({
     name: "login",
     initialState,
     reducers: {
-        // signupUser: (state, action) => {
-        //     state.userDetails = action.payload.userData
-        //     state.status = Status.SUCCEEDED
-        // },
         login: (state, action) => {
             state.tokenDetails = action.payload.tokenData
             console.log("setting kvsToken", state.tokenDetails, action.payload)
@@ -54,81 +50,3 @@ const userSlice = createSlice({
 export const { login, logout, fetchUserDetails, loginError, loginStatus, signupUser } = userSlice.actions;
 
 export default userSlice.reducer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const checkCredentials = createAsyncThunk(
-//     "user/checkCredentials",
-//     async (credentials: User, { rejectWithValue }) => {
-//         try {
-//             const response = await validateUser(credentials.userid, credentials.password);
-//             return response
-//         } catch (error: any) {
-//             return rejectWithValue(error.response?.data?.message || "Validation failed");
-//         }
-//     }
-// );
-
-// export const userSlice = createSlice({
-//     name: "user",
-//     initialState,
-//     reducers: {
-//         addUser: (state, action: PayloadAction<User>) => {
-//             state.users.push(action.payload);
-//         }
-//     },
-//     extraReducers: (builder) => {
-//         builder
-//             .addCase(checkCredentials.pending, (state) => {
-//                 state.status = Status.Loading;
-//                 state.error = null
-//             })
-//             .addCase(checkCredentials.fulfilled, (state) => {
-//                 state.status = Status.Succeeded;
-//                 state.isAuthenticated = true
-//             })
-//             .addCase(checkCredentials.rejected, (state, action) => {
-//                 state.status = Status.Failed;
-//                 state.error = (action.payload as string)
-//             })
-//     }
-// })
-
-// export const {addUser} = userSlice.actions
-
-// export default userSlice.reducer
