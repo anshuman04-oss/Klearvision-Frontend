@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import logo from '../logo.svg';
 import "../App.css";
 import withBasePage from "./withBasePage";
 import Home from "../components/homePage/Home";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { ReactElement, useState } from "react";
 import useDevice from "../../hooks/useDevice";
 import { Device } from "../../types";
