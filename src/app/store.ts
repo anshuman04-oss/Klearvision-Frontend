@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { configureStore } from "@reduxjs/toolkit";
 import loginSlice from "../features/userSlice";
 import deviceReducer from "../features/deviceSlice";

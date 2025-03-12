@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { Provider } from 'react-redux'

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { Button, Input, Status } from "../../constants";
 import useAuth from "../../hooks/useAuth";
-import { User } from "../../types";
+// import { User } from "../../types";
 import Loading from "../Loading";
 import { registerUser } from "../../api/authAPI";
 import { SignUpFormData } from "../../types";
@@ -13,7 +12,7 @@ export default function Signup() {
     const { register, handleSubmit } = useForm<SignUpFormData>()
 
     const onSubmitBtn = (data: SignUpFormData) => {
-        const user = data as User;
+        // const user = data as User;
         registerUser(data);
     }
 

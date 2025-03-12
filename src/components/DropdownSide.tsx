@@ -6,7 +6,7 @@ import React from 'react'
 
 const Dropdown: React.FC<DropdownProps> = ({
   sideElements = [],
-  onChange = (e) => {},
+  onChange = () => {},
   ...props
 }) => {
 

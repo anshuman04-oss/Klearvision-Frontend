@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-wrapper-object-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
 import { LoginFormData } from '../../types'

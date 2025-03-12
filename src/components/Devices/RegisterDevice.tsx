@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { ReactElement, useState } from "react";
 import useDevice from "../../hooks/useDevice";
 import { Device } from "../../types";
 import { Status } from "../../constants";
 import Loading from "../Loading";
 
-const RegisterDevice : React.FC<{}> = () : ReactElement => {
+const RegisterDevice : React.FC<object> = () : ReactElement => {
 
     const [deviceName, setDeviceName] = useState("")
     const { deviceList, status, error, deviceRegister } = useDevice();

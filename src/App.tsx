@@ -5,6 +5,7 @@ import { TokenDetails } from './types';
 import PrivateRoute from './pages/PrivateRoute';
 import useAuth from './hooks/useAuth';
 import { KVS_LOCAL_STORAGE_KEY } from './constants';
+// import ImageInput from './components/ImageUpload';
 
 // Lazy load your components
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -71,8 +72,6 @@ function App() {
               element={
                 <PrivateRoute>
                   <DevicePage />
-                  {/* <HlsPlayer /> */}
-                  {/* <StreamPage /> */}
                 </PrivateRoute>
               }
             />
@@ -84,6 +83,14 @@ function App() {
                 </PrivateRoute>
               }
             />
+            {/* <Route
+              path="/image"
+              element={
+                <PrivateRoute>
+                  <ImageInput />
+                </PrivateRoute>
+              }
+            /> */}
             <Route path="/signup" element={<RegisterPage />} />
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="*" element={<NotFound />} />

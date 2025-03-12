@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
@@ -85,12 +84,13 @@ const HlsPlayer: React.FC = () => {
       // Stream is null now
       // mediaStream is not null
 
-      const newSocket = new WebSocket('wss://43.204.103.160/ws/');
+      const newSocket = new WebSocket('ws://13.201.146.30/ws/');
       setSocket(newSocket);
 
       console.log(newSocket);
 
       newSocket.onopen = () => {
+        // console.log('Inside onopen in newSocket')
         console.log('✅ WebSocket connection established.');
         const recorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm; codecs=vp8' });
         setMediaRecorder(recorder);
@@ -108,6 +108,8 @@ const HlsPlayer: React.FC = () => {
     }
   };
 
+  // console.log(isPlaying);   // This is false every time
+
   const handleStreamStop = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
@@ -120,11 +122,17 @@ const HlsPlayer: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (isPlaying) {
+      setIsPlaying(isPlaying);
+    }
+  }, [isPlaying]);
   return (
     <div className="hls-player-container" style={{ textAlign: "center", padding: "20px" }}>
       <h1 className="text-gray-50 text-4xl font-bold mt-10">Playing Your Video</h1>
       <div className="video-container" style={{ display: "flex", justifyContent: "center", marginTop: "30px", maxWidth: "1000px", position: "relative" }}>
         {isPlaying && <h2>Stream is now playing:</h2>}
+        {/* {if(isPlaying) setIsPlaying(isPlaying);} */}
         {device && device.playBackUrl && device.playBackToken && (
           <video ref={videoRef} controls style={{ width: "50%", height: "auto", borderRadius: "8px", border: "1px solid white", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }} />
         )}

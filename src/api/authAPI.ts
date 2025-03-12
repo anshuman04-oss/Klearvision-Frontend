@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 import API_BASE_URL, { Status } from "../constants";
 import { AppDispatch } from "../app/store";
 import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/userSlice";
-import { TokenDetails, User, SignUpFormData } from "../types";
+import { TokenDetails, User, SignUpFormData, UserAuthCheck } from "../types";
 
 //TODO - Implement the fetchUser dispatch function - Done
 export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch) => {
@@ -62,7 +61,7 @@ export const userLogin = (username : string, password: string) => async (dispatc
         }
     });
     
-    const data = await response.data as any;
+    const data = await response.data as UserAuthCheck;
     const tokenData: TokenDetails = {
       token: data.access_token,
       expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
@@ -89,7 +88,9 @@ export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
         }
     });
     
-    const data = await response.data as any;
+    const data = await response.data as UserAuthCheck;
+    console.log(data)
+    console.log(typeof data)
     const tokenData: TokenDetails = {
       token: data.access_token,
       expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
