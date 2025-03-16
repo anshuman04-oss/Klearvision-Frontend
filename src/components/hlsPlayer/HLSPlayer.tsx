@@ -2,33 +2,22 @@ import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
 import { Device } from "../../types";
-import { useParams } from "react-router-dom";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
 import CommonFilters from "../commonFilters/CommonFilters";
 import DropdownSide from "../DropdownSide";
 import useAuth from "../../hooks/useAuth";
-import useDevice from "../../hooks/useDevice";
 import { AppDispatch } from "../../app/store";
 import FogFilter from "./filters/FogFilter";
 import RainFilter from "./filters/RainFilter";
 
-const HlsPlayer: React.FC = () => {
+const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [device, setDevice] = useState<Device | undefined>(undefined);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsInstance = useRef<Hls | null>(null);
   const [filter, setFilter] = useState<string>("Fog");
 
-  const { deviceId } = useParams<{ deviceId: string }>();
   const { accessToken } = useAuth();
-  const { devices } = useDevice();
-
-  useEffect(() => {
-    if (devices && deviceId) {
-      setDevice(devices[deviceId]);
-    }
-  }, [devices, deviceId]);
 
   useEffect(() => {
     if(device) {
@@ -58,6 +47,7 @@ const HlsPlayer: React.FC = () => {
     }
 
     const playbackURLToken = `${device.playBackUrl}?token=${device.playBackToken}`;
+    // const playbackURLToken = `https://9f18fad97252.ap-south-1.playback.live-video.net/api/video/v1/ap-south-1.495846082945.channel.xYRQgBuqgDAd.m3u8`;
 
     if (hlsInstance.current) {
       hlsInstance.current.destroy();

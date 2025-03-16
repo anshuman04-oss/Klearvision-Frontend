@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
-import API_BASE_URL, { Status } from "../constants";
+import { Status, API_BASE_URL } from "../constants";
 import { AppDispatch } from "../app/store";
 import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/loginSlice";
 import { TokenDetails, User } from "../types";

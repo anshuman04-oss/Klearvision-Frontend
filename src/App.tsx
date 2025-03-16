@@ -17,6 +17,7 @@ const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 const DevicePage = React.lazy(() => import('./pages/DevicePage'));
 const StreamPage = React.lazy(() => import('./pages/StreamPage'));
 const HLSPlayerPage = React.lazy(() => import('./pages/HLSPlayerPage'));
+const DetectionPage = React.lazy(() => import('./pages/DetectionPage'));
 
 function App() {
 
@@ -71,9 +72,9 @@ function App() {
               path="/stream"
               element={
                 <PrivateRoute>
-                  <DevicePage />
+                  {/* <DevicePage /> */}
                   {/* <HlsPlayer /> */}
-                  {/* <StreamPage /> */}
+                  <StreamPage />
                 </PrivateRoute>
               }
             />
@@ -82,6 +83,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <HLSPlayerPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/detection"
+              element={
+                <PrivateRoute>
+                  <DetectionPage />
                 </PrivateRoute>
               }
             />
