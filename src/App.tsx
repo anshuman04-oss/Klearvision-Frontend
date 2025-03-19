@@ -5,6 +5,7 @@ import { TokenDetails } from './types';
 import PrivateRoute from './pages/PrivateRoute';
 import useAuth from './hooks/useAuth';
 import { KVS_LOCAL_STORAGE_KEY } from './constants';
+import ViewStreamedVideo from './components/streamedVideo/ViewStreamedVideo';
 
 // Lazy load your components
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -15,8 +16,8 @@ const LogoutPage = React.lazy(() => import('./pages/LogoutPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 const DevicePage = React.lazy(() => import('./pages/DevicePage'));
-const StreamPage = React.lazy(() => import('./pages/StreamPage'));
-const HLSPlayerPage = React.lazy(() => import('./pages/HLSPlayerPage'));
+// const StreamPage = React.lazy(() => import('./pages/StreamPage'));
+// const HLSPlayerPage = React.lazy(() => import('./pages/HLSPlayerPage'));
 
 function App() {
 
@@ -81,7 +82,8 @@ function App() {
               path="/player/:deviceId"
               element={
                 <PrivateRoute>
-                  <HLSPlayerPage />
+                  {/* <HLSPlayerPage /> */}
+                  <ViewStreamedVideo />
                 </PrivateRoute>
               }
             />

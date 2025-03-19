@@ -17,7 +17,6 @@ type SignUpFormData = {
 export default function Signup() {
     const {error, status, signUpUser} = useAuth();
     const { register, handleSubmit } = useForm<SignUpFormData>()
-    
 
     const onSubmit = (data: SignUpFormData) => {
         const user = data as User;

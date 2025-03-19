@@ -1,4 +1,5 @@
 const API_BASE_URL = 'https://8xk6jj6h71.execute-api.ap-south-1.amazonaws.com/api'
+const FREEPIK_API_KEY = 'FPSX29b91d15625e4200bf2d27c896e90594';
 
 import Container from "../container/Container";
 import LogoutBtn from "../components/Header/LogoutBtn";
