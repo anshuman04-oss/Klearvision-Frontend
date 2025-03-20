@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { Device, DeviceState, UserState } from "../types";
 import { logout } from "../features/userSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchDevices, registerDevice, removeDevice } from "../api/deviceAPI";
 import { UUID } from "crypto";
 
@@ -11,18 +11,16 @@ import { UUID } from "crypto";
 const useDevice = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { devices, status, error } = useSelector<RootState, DeviceState>((state: RootState) => state.device);
-    const {tokenDetails} = useSelector<RootState, UserState>(state => state.user);
+    const {tokenDetails} = useSelector((state: RootState) => state.user) as UserState;
     const deviceList : Device[] = []
     if(devices) Object.keys(devices).forEach((deviceId: string) =>{
         deviceList.push(devices[deviceId])
     })
-    // Seemingly right for devices' list
-
-    let accessToken = "";
+    const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
     
     useEffect(() => {
 		if(tokenDetails && tokenDetails.expiry > Date.now()/1000) {
-            accessToken = tokenDetails.token;
+            setAccessToken(tokenDetails.token);
         } else {
             dispatch(logout());
         }
@@ -35,15 +33,27 @@ const useDevice = () => {
 	}, [accessToken])
     
     const deviceRegister = (deviceName: string) => {
-        dispatch(registerDevice(deviceName, accessToken));
+        if(accessToken) {
+            dispatch(registerDevice(deviceName, accessToken));
+        } else {
+            console.log("No access token found");
+        }
     }
 
     const deviceFetch = () => {
-        dispatch(fetchDevices(accessToken));
+        if (accessToken) {
+            dispatch(fetchDevices(accessToken));
+        } else {
+            console.error("Access token is undefined");
+        }
     }
 
     const deviceRemove = (deviceId: UUID) => {
-        dispatch(removeDevice(deviceId, accessToken))
+        if (accessToken) {
+            dispatch(removeDevice(deviceId, accessToken));
+        } else {
+            console.error("Access token is undefined");
+        }
     }
 
     return { devices, deviceList, error, status, deviceRegister, deviceRemove, deviceFetch }

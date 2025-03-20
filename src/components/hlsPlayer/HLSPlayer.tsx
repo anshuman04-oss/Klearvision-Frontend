@@ -2,20 +2,19 @@ import React, { useRef, useState, useEffect } from "react";
 import Hls from "hls.js";
 import { useDispatch } from "react-redux";
 import { Device } from "../../types";
-import { useParams } from "react-router-dom";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
 import CommonFilters from "../commonFilters/CommonFilters";
 import DropdownSide from "../DropdownSide";
 import useAuth from "../../hooks/useAuth";
-import useDevice from "../../hooks/useDevice";
 import { AppDispatch } from "../../app/store";
 import FogFilter from "./filters/FogFilter";
 import RainFilter from "./filters/RainFilter";
 
-const HlsPlayer: React.FC = () => {
+const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);   // 
-  const [device, setDevice] = useState<Device | undefined>(undefined);
+  // const [device, setDevice] = useState<Device | undefined>(undefined);
+  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsInstance = useRef<Hls | null>(null);
   const [filter, setFilter] = useState<string>("Fog");
@@ -23,15 +22,7 @@ const HlsPlayer: React.FC = () => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
-  const { deviceId } = useParams<{ deviceId: string }>();
   const { accessToken } = useAuth();
-  const { devices } = useDevice();
-
-  useEffect(() => {
-    if (devices && deviceId) {
-      setDevice(devices[deviceId]);
-    }
-  }, [devices, deviceId]);
 
   useEffect(() => {
     if(device) {
@@ -50,14 +41,61 @@ const HlsPlayer: React.FC = () => {
         hlsInstance.current.destroy();
         hlsInstance.current = null;
       }
-      if (socket) {
-        socket.close();
+  //   };
+  // }, []);
+
+  const handlePlay = () => {
+    if (!device?.playBackUrl || !device.playBackToken) {
+      console.error("Playback URL or token is missing.");
+      return;
+    }
+
+    const playbackURLToken = `${device.playBackUrl}?token=${device.playBackToken}`;
+    // const playbackURLToken = `https://9f18fad97252.ap-south-1.playback.live-video.net/api/video/v1/ap-south-1.495846082945.channel.xYRQgBuqgDAd.m3u8`;
+
+    if (hlsInstance.current) {
+      hlsInstance.current.destroy();
+      hlsInstance.current = null;
+    }
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hlsInstance.current = hls;
+
+      hls.loadSource(playbackURLToken);
+      if (videoRef.current) {
+        hls.attachMedia(videoRef.current);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          console.log(`Manifest loaded, found ${hls.levels.length} quality level(s)`);
+          setIsPlaying(true);
+          videoRef.current?.play();
+        });
+
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error("HLS Error:", data);
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.error("Network error encountered");
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.error("Media error encountered");
+                break;
+              default:
+                console.error("Fatal error encountered");
+                break;
+            }
+          }
+        });
       }
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [socket, stream]);
+  }
+  handlePlay();
+}}, [socket, stream]);
 
   const handleStreamStart = async () => {
     try {
@@ -108,7 +146,7 @@ const HlsPlayer: React.FC = () => {
     }
   };
 
-  // console.log(isPlaying);   // This is false every time
+  console.log(isPlaying);   // This is false every time
 
   const handleStreamStop = () => {
     if (mediaRecorder) {

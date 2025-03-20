@@ -1,5 +1,5 @@
 import axios from "axios";
-import API_BASE_URL, { Status } from "../constants";
+import { API_BASE_URL, Status } from "../constants";
 import { Device } from "../types";
 import { AppDispatch } from "../app/store";
 import { deregister, deviceError, deviceStatus, register, setPlaybackToken } from "../features/deviceSlice";
