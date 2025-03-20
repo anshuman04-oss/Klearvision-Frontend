@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { Status } from "../constants";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface User {
     userId?     : UUID | "" | undefined
@@ -9,6 +9,16 @@ interface User {
     email       : string
     phone       : number | string
     password    : string | undefined
+}
+
+interface ContainerProps {
+    children: ReactNode;
+}
+
+interface UserAuthCheck {
+    access_token: string
+    expires_in: string
+    token_type: string
 }
 
 interface TokenDetails {
@@ -83,4 +93,12 @@ interface DropdownProps {
     onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps, PlaybackTokenContent, DropdownProps }
+type SignUpFormData = {
+    firstName   : string
+    lastName    : string | undefined
+    email       : number | string
+    phone       : string
+    password    : string | undefined
+}
+
+export type { User, UserState, TokenDetails, Device, DeviceState, InputProps, FormData, SelectProps, hlsURL, LoginFormData, PrivateRouteProps, PlaybackTokenContent, DropdownProps, SignUpFormData, UserAuthCheck, ContainerProps }

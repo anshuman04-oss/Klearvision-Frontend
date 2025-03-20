@@ -19,7 +19,6 @@ const DeviceList : React.FC<object> = () : ReactElement => {
     }
 
     const handleStream = (deviceId: UUID) => {
-        //TODO-handle Stream click
         navigate(`/player/${deviceId}`)
     }
 
@@ -36,8 +35,6 @@ const DeviceList : React.FC<object> = () : ReactElement => {
             <ul>
                 {deviceList.map((device : Device) => (
                     <li key={device.deviceId} onClick={() => setDevice(device)} className="flex justify-between items-center mb-2 bg-gray-800 text-gray-50">
-                        {/* <span>Device Id: {device.deviceId}</span> */}
-                        {/* <span>Device Name: {device.deviceName}</span> */}
                         <span className="font-bold">{device.deviceName}</span>
                         {selectedDevice?.deviceId === device.deviceId &&
                         <div>
@@ -54,7 +51,6 @@ const DeviceList : React.FC<object> = () : ReactElement => {
                                     <ContentCopyIcon fontSize="small" />
                                     </Button>
                                 </div>
-                                {/* <span>streamKey: {device.streamKey}</span> */}
                             </div>
 
                             <div className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">

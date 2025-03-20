@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { Provider } from 'react-redux'
-import { store } from './app/store.ts'
+import store from './app/store.ts'
 import React from 'react'
 import App from './App.tsx'
 

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export default function Button({
-    type = "button",
+    // type = "button",
     bgColor = "bg-blue-600",
     textColor = "text-white",
     className = "",

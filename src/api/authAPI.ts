@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 import API_BASE_URL, { Status } from "../constants";
 import { AppDispatch } from "../app/store";
-import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/loginSlice";
-import { TokenDetails, User } from "../types";
+import { fetchUserDetails, login, loginError, loginStatus, logout } from "../features/userSlice";
+import { TokenDetails, User, SignUpFormData, UserAuthCheck } from "../types";
 
 //TODO - Implement the fetchUser dispatch function - Done
 export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch) => {
@@ -29,7 +28,7 @@ export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
+export const registerUser = (user : SignUpFormData) => async (dispatch : AppDispatch) => {
   //TODO - Need to implement  - Done 
   const url = `${API_BASE_URL}/v1/device/register`
 
@@ -40,7 +39,7 @@ export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
       }
     })
     console.log(response.data)
-    alert("User registered successfully");
+    if(response.status === 200) alert("User registered successfully");
     dispatch(login({ email: user.email, password: user.password }));   // Sent to login page after successful registration
   } catch (error) {
     console.error("Error while registering ", error)
@@ -62,7 +61,7 @@ export const userLogin = (username : string, password: string) => async (dispatc
         }
     });
     
-    const data = await response.data as any;
+    const data = await response.data as UserAuthCheck;
     const tokenData: TokenDetails = {
       token: data.access_token,
       expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
@@ -89,7 +88,9 @@ export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
         }
     });
     
-    const data = await response.data as any;
+    const data = await response.data as UserAuthCheck;
+    console.log(data)
+    console.log(typeof data)
     const tokenData: TokenDetails = {
       token: data.access_token,
       expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
@@ -116,9 +117,6 @@ export const userLogout = () => async (dispatch: AppDispatch) => {
   }
 };
 
-// ToDo - Camel case for all the var names - last
-// ToDo - If the user directly comes to some other page like stream, redirect to login.
-// If already authorized, login route will always redirect to home.
 
 
 
@@ -138,33 +136,3 @@ export const userLogout = () => async (dispatch: AppDispatch) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import axios from "axios";
-// import API_BASE_URL from "../constants/index";
-
-// const api = axios.create({
-//     baseURL: API_BASE_URL,
-//     headers: {
-//         "Content-Type": "application/json",
-//     }
-// })
-
-// export default api;

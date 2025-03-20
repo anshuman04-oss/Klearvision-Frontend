@@ -1,28 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { Button, Input, Status } from "../../constants";
 import useAuth from "../../hooks/useAuth";
-import { User } from "../../types";
+// import { User } from "../../types";
 import Loading from "../Loading";
-
-type SignUpFormData = {
-    firstName   : string
-    lastName    : string | undefined
-    email       : number | string
-    phone       : string
-    password    : string | undefined
-}
+import { registerUser } from "../../api/authAPI";
+import { SignUpFormData } from "../../types";
 
 export default function Signup() {
-    const {error, status, signUpUser} = useAuth();
+    const {error, status} = useAuth();
     const { register, handleSubmit } = useForm<SignUpFormData>()
-    
 
-    const onSubmit = (data: SignUpFormData) => {
-        const user = data as User;
-        signUpUser(user);
+    const onSubmitBtn = (data: SignUpFormData) => {
+        // const user = data as User;
+        registerUser(data);
     }
+
     return (
         <div className='flex justify-center items-center h-[90vh] w-full flex-col'>
             <h1 className='text-white font-bold text-4xl m-2'>Create your Klearvision account</h1>
@@ -39,7 +32,7 @@ export default function Signup() {
             {error && <p className="text-red-600 mt-8 text-center bg-gray-100 py-3 px-6">{error}</p>}
             <div className='bg-gray-900 text-gray-50 rounded-lg px-8 py-5'>
                 <form 
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmitBtn)}
                     className='flex items-center justify-center flex-col rounded-lg px-20'
                 >First Name
                     <Input 
@@ -47,8 +40,6 @@ export default function Signup() {
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg w-96'
                         placeholder='Enter your first name'
-                        // value={userid}
-                        // onChange={(e) => setUserid(e.target.value)}
                         {
                             ...register("firstName", {
                                 required: true
@@ -124,51 +115,3 @@ export default function Signup() {
         </div>
     </div>
 )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// curl --location 'http://43.204.219.57:5000/api/v1/register' \
-// --header 'Content-Type: application/json' \
-// --data-raw '{
-//    "FistName" : "jack1",
-//    "lastName" : "rayan1",
-//    "mail":"kvision@12345",
-//    "phNo":"123334444455",
-//    "password":"klearvision@123"
-// }'
-
-// OUTPUT
-// {
-//     "userId": "003fb836-24e2-48aa-b9df-97573fb49727",
-//     "FistName": "jack1",
-//     "lastName": "rayan1",
-//     "mail": "kvision@12345",
-//     "phNo": "123334444455"
-// }

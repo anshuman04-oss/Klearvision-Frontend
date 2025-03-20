@@ -4,13 +4,13 @@ import { Device } from "../../types";
 import { Status } from "../../constants";
 import Loading from "../Loading";
 
-const RegisterDevice : React.FC<{}> = () : ReactElement => {
+const RegisterDevice : React.FC<object> = () : ReactElement => {
 
     const [deviceName, setDeviceName] = useState("")
     const { deviceList, status, error, deviceRegister } = useDevice();
 
     const handleRegister = () => {
-        if(!Boolean(deviceName)) {
+        if(!deviceName) {
             window.alert("Device Name is Empty!!!")
             return;
         }

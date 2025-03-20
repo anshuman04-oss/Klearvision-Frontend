@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-wrapper-object-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import useAuth from '../../hooks/useAuth'
 import Loading from '../Loading'
 import { LoginFormData } from '../../types'
@@ -10,8 +6,6 @@ import { Link } from 'react-router';
 import { Status } from '../../constants';
 import Button from '../Button';
 import Input from '../Input';
-
-// I have put the login form data in the index file of the types folder
 
 function LoginComponent() {
 

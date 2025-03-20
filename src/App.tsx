@@ -5,6 +5,7 @@ import { TokenDetails } from './types';
 import PrivateRoute from './pages/PrivateRoute';
 import useAuth from './hooks/useAuth';
 import { KVS_LOCAL_STORAGE_KEY } from './constants';
+// import ImageInput from './components/ImageUpload';
 
 // Lazy load your components
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -15,7 +16,6 @@ const LogoutPage = React.lazy(() => import('./pages/LogoutPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const UserProfilePage = React.lazy(() => import('./pages/UserProfilePage'));
 const DevicePage = React.lazy(() => import('./pages/DevicePage'));
-const StreamPage = React.lazy(() => import('./pages/StreamPage'));
 const HLSPlayerPage = React.lazy(() => import('./pages/HLSPlayerPage'));
 
 function App() {
@@ -72,8 +72,6 @@ function App() {
               element={
                 <PrivateRoute>
                   <DevicePage />
-                  {/* <HlsPlayer /> */}
-                  {/* <StreamPage /> */}
                 </PrivateRoute>
               }
             />
@@ -85,6 +83,14 @@ function App() {
                 </PrivateRoute>
               }
             />
+            {/* <Route
+              path="/image"
+              element={
+                <PrivateRoute>
+                  <ImageInput />
+                </PrivateRoute>
+              }
+            /> */}
             <Route path="/signup" element={<RegisterPage />} />
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="*" element={<NotFound />} />

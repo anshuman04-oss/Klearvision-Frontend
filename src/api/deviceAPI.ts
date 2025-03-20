@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import axios from "axios";
 import API_BASE_URL, { Status } from "../constants";
 import { Device } from "../types";
@@ -41,6 +39,7 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
         });
         console.log(response);
         const data = response.data as Device;
+        console.log(data)
         dispatch(deregister({deviceData : {deviceId}}))
     } catch (error) {
         console.log("Register device error: ", error);
