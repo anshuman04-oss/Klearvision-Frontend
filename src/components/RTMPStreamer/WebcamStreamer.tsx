@@ -54,8 +54,8 @@ const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
           }
         };
 
-        newMediaRecorder.onerror = (event) => {
-          console.error("❌ MediaRecorder error:", event.error);
+        newMediaRecorder.onerror = (error) => {
+          console.error("❌ MediaRecorder error:", error);
         };
 
         // Start recording, sending data every 100ms
