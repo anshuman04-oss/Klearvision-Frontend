@@ -17,3 +17,27 @@ function Footer() {
 }
 
 export default Footer
+
+// import { AppBar, Toolbar, Typography } from "@mui/material";
+
+// const Footer = () => (
+//   <AppBar position="static" color="primary">
+//     <Toolbar>
+//       <Typography variant="body2" sx={{ flexGrow: 1, textAlign: "center" }}>
+//         © 2025 Your Company
+//       </Typography>
+//     </Toolbar>
+//   </AppBar>
+// );
+
+// export default Footer;
+
+// import { Box, Typography } from "@mui/material";
+
+// const Footer = () => (
+//   <Box component="footer" sx={{ py: 2, textAlign: "center", bgcolor: "grey.200" }}>
+//     <Typography variant="body2">© 2025 Your Company</Typography>
+//   </Box>
+// );
+
+// export default Footer;

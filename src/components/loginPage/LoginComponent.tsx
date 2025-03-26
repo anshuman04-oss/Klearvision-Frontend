@@ -15,6 +15,7 @@ function LoginComponent() {
     const onSubmit = (data: LoginFormData) => {
         console.log('Form submitted', data)
         if(!isAuthenticated && status !== Status.LOADING) {
+            console.log('Logging in')
             loginUser(data.username, data.password)
         }
     }

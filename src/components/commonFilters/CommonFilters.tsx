@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
-import React, { useEffect } from 'react'
-import Dropdown from '../Dropdown'
-import Button from '../Button'
+import React from 'react'
+import Dropdown from '../Dropdown';
+import { Button } from '@mui/material'
 
 function CommonFilters() {
     const commonFilters = {"Display Option": ["Both Input and Output", "Output"], "Display Size": ["Small", "Medium", "Large"], "Select Settings": ["1", "2", "3"]}
@@ -30,13 +30,13 @@ function CommonFilters() {
             <Dropdown mainElement='Display Size' sideElements={commonFilters['Display Size']}/>
             <Dropdown mainElement='Select Settings' sideElements={commonFilters['Select Settings']}/>
             <Button
-                onClick={useEffect(handleSaveSettings, [saveSettings])}
+                onClick={handleSaveSettings}
             >Save Settings</Button>
             <Button
-                onClick={useEffect(handleReset, [reset])}
+                onClick={handleReset}
             >Reset</Button>
             <Button
-                onClick={useEffect(handleClose, [close])}
+                onClick={handleClose}
             >Close</Button>
         </div>
     )

@@ -36,12 +36,12 @@ function App() {
       }
       if(userToken && !newTokenFetched) {
           const tokenExpired = userToken && userToken.expiry < Date.now()/1000;
-          console.log("tokenExpired : ", tokenExpired)
+          // console.log("tokenExpired : ", tokenExpired)
           if(!tokenExpired) tokenRenew(userToken.token);
           setNewTokenFetched(true);
       }
     }
-    console.log(userToken, newTokenFetched)
+    // console.log(userToken, newTokenFetched)
       
   },[userToken])
 

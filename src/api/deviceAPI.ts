@@ -18,11 +18,10 @@ export const registerDevice = (deviceName: string, accessToken: string) => async
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        console.log(response);
         const data = response.data as Device;
         dispatch(register({deviceData : data}))
     } catch (error) {
-        console.log("Register device error: ", error);
+        console.error("Register device error: ", error);
         dispatch(deviceError({errorData: error}))
     }
 }
@@ -37,12 +36,11 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        console.log(response);
         const data = response.data as Device;
         console.log(data)
         dispatch(deregister({deviceData : {deviceId}}))
     } catch (error) {
-        console.log("Register device error: ", error);
+        console.error("Register device error: ", error);
         dispatch(deviceError({errorData: error}))
     }
 }
@@ -59,12 +57,11 @@ export const fetchPlaybackToken = (deviceId: string, accessToken: string) => asy
               'Authorization': `Bearer ${accessToken}`
             }
           });
-        console.log(response);
         const data = response.data as PlaybackTokenContent;
         const tokenExpiry = Date.now()/1000 + parseInt(data.expiration.replace(/\D/g, ''), 10);	
         dispatch(setPlaybackToken({playBackToken : data.playbackAccessToken, deviceId, tokenExpiry}))
     } catch (error) {
-        console.log("Error fetching Playback token (deviceAPI): ", error);
+        console.error("Error fetching Playback token (deviceAPI): ", error);
         dispatch(deviceError({errorData: error}))
     }
 }
@@ -79,13 +76,12 @@ export const fetchDevices = (accessToken: string) => async (dispatch: AppDispatc
               'Authorization': `Bearer ${accessToken}`
             }
         });
-        console.log(response);
         const devices = response.data as { [key: string]: Device };
         Object.keys(devices).forEach( (deviceId : string) => {
             dispatch(register({deviceData : devices[deviceId]}))
         });
     } catch (error) {
-        console.log("Register device error: ", error);
+        console.error("Register device error: ", error);
         dispatch(deviceError({errorData: error}))
     }
 }

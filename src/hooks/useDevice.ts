@@ -36,7 +36,7 @@ const useDevice = () => {
         if(accessToken) {
             dispatch(registerDevice(deviceName, accessToken));
         } else {
-            console.log("No access token found");
+            console.error("No access token found");
         }
     }
 

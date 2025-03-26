@@ -72,7 +72,7 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
     }
 
     if (!device?.streamKey) {
-      console.log("Device or device stream key not found");
+      console.error("Device or device stream key not found");
       return null;
     }
 

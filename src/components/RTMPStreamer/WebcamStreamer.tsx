@@ -23,7 +23,7 @@ const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
     }
 
     if(!device || !device.streamKey) {
-        console.log("Device or device stream key not found");
+        console.error("Device or device stream key not found");
       return null;
     }
     
@@ -54,8 +54,8 @@ const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
           }
         };
 
-        newMediaRecorder.onerror = (error) => {
-          console.error("❌ MediaRecorder error:", error);
+        newMediaRecorder.onerror = (event) => {
+          console.error("❌ MediaRecorder error:", event.error);
         };
 
         // Start recording, sending data every 100ms

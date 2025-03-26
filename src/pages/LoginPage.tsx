@@ -9,7 +9,6 @@ const LoginPage : React.FC = () => {
         <div>
             {!isAuthenticated && <LoginComponent />}
             {isAuthenticated && <Navigate to="/home" />}
-            {/* <LoginComponent/> */}
         </div>
     );
 }

@@ -18,7 +18,6 @@ const userSlice = createSlice({
     reducers: {
         login: (state, action) => {
             state.tokenDetails = action.payload.tokenData
-            console.log("setting kvsToken", state.tokenDetails, action.payload)
             window.localStorage.setItem(KVS_LOCAL_STORAGE_KEY, JSON.stringify(state.tokenDetails))
             state.isAuthenticated = Boolean(state.tokenDetails && state.tokenDetails.token && state.tokenDetails.expiry > Date.now()/1000);
             state.status = Status.SUCCEEDED

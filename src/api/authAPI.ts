@@ -21,7 +21,7 @@ export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch)
     dispatch(fetchUserDetails({userData: data}));
 
   } catch (error) {
-    console.log(error)
+    console.error(error)
     dispatch(loginError({errorData : error}))
   }
 };
@@ -38,7 +38,6 @@ export const registerUser = (user : SignUpFormData) => async (dispatch : AppDisp
         'Content-Type': 'application/json'
       }
     })
-    console.log(response.data)
     if(response.status === 200) alert("User registered successfully");
     dispatch(login({ email: user.email, password: user.password }));   // Sent to login page after successful registration
   } catch (error) {
@@ -70,7 +69,7 @@ export const userLogin = (username : string, password: string) => async (dispatc
     dispatch(login({tokenData}));
 
   } catch (error) {
-    console.log(error)
+    console.error(error)
     dispatch(loginError({errorData: error}))
   }
 };
@@ -89,8 +88,6 @@ export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
     });
     
     const data = await response.data as UserAuthCheck;
-    console.log(data)
-    console.log(typeof data)
     const tokenData: TokenDetails = {
       token: data.access_token,
       expiry: Date.now()/1000 + parseInt(data.expires_in.replace(/\D/g, ''), 10),
@@ -99,7 +96,7 @@ export const renewToken = (token: string) => async (dispatch: AppDispatch) => {
     dispatch(login({tokenData}));
 
   } catch (error) {
-    console.log(error)
+    console.error(error)
     dispatch(loginError({errorData: error}))
   }
 };
@@ -112,7 +109,7 @@ export const userLogout = () => async (dispatch: AppDispatch) => {
     dispatch(logout());
 
   } catch (error) {
-    console.log(error)
+    console.error(error)
     dispatch(loginError({errorData: error}))
   }
 };
