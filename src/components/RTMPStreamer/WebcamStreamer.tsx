@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Device } from '../../types';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { ProcessType, ProcessTypeLabels, WS_BASE_URL } from '../../constants';
+import { getErrorMessage } from '../../utils/streamingErrors';
 
 const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -70,15 +71,23 @@ const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
     };
 
     wsConnection.onclose = (event) => {
-      const closeReason = `Code: ${event.code}, Reason: ${event.reason || 'No reason provided'}`;
-      console.warn(`⚠️ WebSocket connection closed. ${closeReason}`);
-      setIsStopButtonDisabled(true);
+      const errorMessage = getErrorMessage(event.code, event.reason);
+      console.error(`WebSocket closed: ${errorMessage}`);
       
+      // Show error to user (you might want to use a toast or alert system)
+      if (event.code >= 4000) {
+        // This is a custom error from our server
+        alert(errorMessage);
+        setIsStartButtonDisabled(false);
+        setIsStopButtonDisabled(true);
+        return;
+      }
+      
+      // Handle normal disconnects and reconnection
       if (!event.wasClean && connectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
-        const nextAttempt = connectionAttempts + 1;
-        
+        console.log(`Attempting to reconnect (${connectionAttempts + 1}/${MAX_RECONNECTION_ATTEMPTS})`);
         setTimeout(() => {
-          setConnectionAttempts(nextAttempt);
+          setConnectionAttempts(prev => prev + 1);
           connectWebSocket();
         }, RECONNECTION_DELAY);
       } else {
@@ -86,16 +95,13 @@ const WebcamStreamer: React.FC<{ device?: Device }> = ({ device }) => {
       }
     };
 
-    wsConnection.onerror = (err) => {
-      const errorDetails = err instanceof ErrorEvent ? err.message : 'Unknown error';
-      console.error('❌ WebSocket error:', errorDetails);
-      
+    wsConnection.onerror = (error) => {
+      console.error('WebSocket error:', error);
       // Log additional connection details for debugging
       console.log('WebSocket State:', {
         readyState: wsConnection.readyState,
         bufferedAmount: wsConnection.bufferedAmount,
-        url: wsConnection.url,
-        protocol: wsConnection.protocol || 'none'
+        url: wsConnection.url
       });
     };
 

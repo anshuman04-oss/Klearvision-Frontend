@@ -3,19 +3,15 @@ import Hls from "hls.js";
 import { useDispatch } from "react-redux";
 import { Device } from "../../types";
 import { fetchPlaybackToken } from "../../api/deviceAPI";
-import CommonFilters from "../commonFilters/CommonFilters";
-import DropdownSide from "../DropdownSide";
 import useAuth from "../../hooks/useAuth";
 import { AppDispatch } from "../../app/store";
-import FogFilter from "./filters/FogFilter";
-import RainFilter from "./filters/RainFilter";
+import { Button } from "@mui/material";
 
 const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsInstance = useRef<Hls | null>(null);
-  const [filter, setFilter] = useState<string>("Fog");
 
   const { accessToken } = useAuth();
 
@@ -130,12 +126,7 @@ const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
         )}
       </div>
 
-      <DropdownSide
-        sideElements={["Fog", "Rain"]}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-
-      <button
+      <Button
         style={{
           padding: "5px 10px",
           backgroundColor: "#4CAF50",
@@ -149,11 +140,7 @@ const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
         onClick={handlePlay}
       >
         Play Stream
-      </button>
-
-      {filter === "Fog" && <FogFilter />}
-      {filter === "Rain" && <RainFilter />}
-      <CommonFilters />
+      </Button>
     </div>
   );
 };

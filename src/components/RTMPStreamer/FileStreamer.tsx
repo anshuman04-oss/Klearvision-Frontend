@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Device } from '../../types';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { ProcessType, ProcessTypeLabels, WS_BASE_URL } from '../../constants';
+import { getErrorMessage } from '../../utils/streamingErrors';
 
 const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -22,45 +23,118 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       
+      // Clear existing stream if any
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+      
       // Create object URL for video preview
       const videoURL = URL.createObjectURL(file);
       if (videoRef.current) {
         videoRef.current.src = videoURL;
+        // Add loadedmetadata event listener
+        videoRef.current.onloadedmetadata = () => {
+          setIsStartButtonDisabled(false);
+        };
       }
-      setIsStartButtonDisabled(false);
     }
   };
 
   const createStreamFromVideo = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) return null;
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('Video or canvas reference not found');
+      return null;
+    }
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+    if (!ctx) {
+      console.error('Could not get canvas context');
+      return null;
+    }
 
-    // Set canvas size to match video dimensions
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    console.log('🎨 Setting up canvas stream...');
+    
+    // Set canvas size to match video dimensions with proper quality
+    const targetWidth = 1280; // HD width
+    const targetHeight = 720; // HD height
+    
+    // Calculate aspect ratio
+    const aspectRatio = video.videoWidth / video.videoHeight;
+    
+    // Set dimensions maintaining aspect ratio
+    if (aspectRatio > targetWidth / targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetWidth / aspectRatio;
+    } else {
+      canvas.height = targetHeight;
+      canvas.width = targetHeight * aspectRatio;
+    }
+    
+    console.log(`📐 Canvas size set to ${canvas.width}x${canvas.height}`);
 
-    // Create a stream from the canvas
+    // Configure canvas for better quality
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // Create a stream from the canvas with higher framerate
     const canvasStream = canvas.captureStream(30); // 30 FPS
+    console.log('🎬 Canvas stream created at 30 FPS');
 
-    // Start the drawing loop
-    const drawVideo = () => {
+    // Start the drawing loop with timing control
+    let lastDrawTime = 0;
+    const frameInterval = 1000 / 30; // 30 FPS in ms
+
+    const drawVideo = (timestamp: number) => {
       if (video.paused || video.ended) return;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Control frame rate
+      if (timestamp - lastDrawTime >= frameInterval) {
+        // Clear canvas before drawing
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw video frame with proper scaling
+        ctx.drawImage(
+          video,
+          0, 0, video.videoWidth, video.videoHeight,  // Source dimensions
+          0, 0, canvas.width, canvas.height           // Destination dimensions
+        );
+        
+        lastDrawTime = timestamp;
+      }
+      
       requestAnimationFrame(drawVideo);
     };
 
-    video.play();
-    drawVideo();
-
-    // Loop the video
-    video.onended = () => {
+    // Setup video looping with proper timing
+    const setupVideoLoop = () => {
+      console.log('🔄 Video ended, restarting playback...');
       video.currentTime = 0;
-      video.play();
+      video.play().then(() => {
+        console.log('▶️ Video restarted successfully');
+      }).catch(err => {
+        console.error('❌ Error restarting video:', err);
+      });
     };
+
+    // Remove any existing ended event listener
+    video.removeEventListener('ended', setupVideoLoop);
+    // Add the ended event listener
+    video.addEventListener('ended', setupVideoLoop);
+
+    // Configure video playback
+    video.playbackRate = 1.0; // Ensure normal playback speed
+    
+    // Ensure video starts playing with proper initialization
+    video.play().then(() => {
+      console.log('▶️ Video started successfully');
+      requestAnimationFrame(drawVideo);
+      console.log('🎨 Drawing loop started');
+    }).catch(err => {
+      console.error('❌ Error playing video:', err);
+    });
 
     return canvasStream;
   }, []);
@@ -93,16 +167,24 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
 
       try {
         const newMediaRecorder = new MediaRecorder(videoStream, {
-          mimeType: 'video/webm; codecs=vp8'
+          mimeType: 'video/webm; codecs=vp8',
+          videoBitsPerSecond: 2500000 // 2.5 Mbps for better quality
         });
 
         newMediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0 && wsConnection.readyState === WebSocket.OPEN) {
+            console.log(`📡 Sending video chunk: ${event.data.size} bytes`);
             wsConnection.send(event.data);
           }
         };
 
-        newMediaRecorder.start(100);
+        newMediaRecorder.onerror = (event) => {
+          console.error("❌ MediaRecorder error:", event.error);
+        };
+
+        // Start recording with smaller timeslices for smoother streaming
+        newMediaRecorder.start(50); // Reduced from 100ms to 50ms
+        console.log('🎥 MediaRecorder started with enhanced settings');
         setMediaRecorder(newMediaRecorder);
         setIsStartButtonDisabled(true);
       } catch (err) {
@@ -112,10 +194,21 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
     };
 
     wsConnection.onclose = (event) => {
-      console.warn(`WebSocket closed. Code: ${event.code}`);
-      setIsStopButtonDisabled(true);
+      const errorMessage = getErrorMessage(event.code, event.reason);
+      console.error(`WebSocket closed: ${errorMessage}`);
       
+      // Show error to user
+      if (event.code >= 4000) {
+        // This is a custom error from our server
+        alert(errorMessage);
+        setIsStartButtonDisabled(false);
+        setIsStopButtonDisabled(true);
+        return;
+      }
+      
+      // Handle normal disconnects and reconnection
       if (!event.wasClean && connectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
+        console.log(`Attempting to reconnect (${connectionAttempts + 1}/${MAX_RECONNECTION_ATTEMPTS})`);
         setTimeout(() => {
           setConnectionAttempts(prev => prev + 1);
           connectWebSocket();
@@ -127,17 +220,37 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
 
     wsConnection.onerror = (error) => {
       console.error('WebSocket error:', error);
+      // Log additional connection details for debugging
+      console.log('WebSocket State:', {
+        readyState: wsConnection.readyState,
+        bufferedAmount: wsConnection.bufferedAmount,
+        url: wsConnection.url
+      });
     };
 
     return wsConnection;
   }, [connectionAttempts, device, processType, stream]);
 
   const handleStartStreaming = useCallback(() => {
-    const newStream = createStreamFromVideo();
-    if (newStream) {
-      setStream(newStream);
+    try {
+      // Ensure any existing stream is cleaned up
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      const newStream = createStreamFromVideo();
+      if (newStream) {
+        setStream(newStream);
+        console.log('✅ Stream created successfully');
+      } else {
+        throw new Error('Failed to create stream');
+      }
+    } catch (err) {
+      console.error('Error starting stream:', err);
+      alert('Failed to start streaming. Please try again.');
+      setIsStartButtonDisabled(false);
     }
-  }, [createStreamFromVideo]);
+  }, [createStreamFromVideo, stream]);
 
   useEffect(() => {
     if (stream) {
@@ -151,27 +264,40 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
   const handleStopStreaming = useCallback(() => {
     if (isStopButtonDisabled) return;
 
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-      mediaRecorder.stop();
-    }
+    console.log("🛑 Stopping streaming...");
 
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.close();
-    }
+    try {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        console.log('⏹️ MediaRecorder stopped.');
+      }
 
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+        console.log('🔌 WebSocket closed.');
+      }
 
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
+      if (stream) {
+        stream.getTracks().forEach(track => {
+          track.stop();
+          console.log(`Track ${track.kind} stopped.`);
+        });
+        setStream(null);
+      }
 
-    setMediaRecorder(null);
-    setSocket(null);
-    setIsStartButtonDisabled(false);
-    setIsStopButtonDisabled(true);
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+
+      setMediaRecorder(null);
+      setSocket(null);
+      setIsStartButtonDisabled(false);
+      setIsStopButtonDisabled(true);
+    } catch (error) {
+      console.error('Error during cleanup:', error);
+      setIsStartButtonDisabled(false);
+      setIsStopButtonDisabled(true);
+    }
   }, [mediaRecorder, socket, stream, isStopButtonDisabled]);
 
   useEffect(() => {
