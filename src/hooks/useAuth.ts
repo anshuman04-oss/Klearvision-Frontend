@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
-import { UserState } from "../types";
-import { renewToken, userLogin, userLogout } from "../api/authAPI";
+import { User, UserState } from "../types";
+import { registerUser, renewToken, userLogin, userLogout } from "../api/authAPI";
 
 const useAuth = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -15,6 +15,10 @@ const useAuth = () => {
         dispatch(userLogout())
     }
 
+    const signupUser = (user : User) => {
+        dispatch(registerUser(user));
+    }
+
     const tokenRenew = (token : string | undefined) => {
         if(token) {
             dispatch(renewToken(token));
@@ -23,7 +27,7 @@ const useAuth = () => {
         }
     }
 
-    return { accessToken: tokenDetails?.token, error, status, isAuthenticated, loginUser, logoutUser, tokenRenew }
+    return { accessToken: tokenDetails?.token, error, status, isAuthenticated, loginUser, logoutUser, tokenRenew, signupUser }
 }
 
 export default useAuth

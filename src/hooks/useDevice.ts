@@ -42,11 +42,15 @@ const useDevice = () => {
     }
 
     const deviceFetch = () => {
-        dispatch(fetchDevices(accessToken));
+        if (accessToken) {
+            dispatch(fetchDevices(accessToken));
+        }
     }
 
     const deviceRemove = (deviceId: UUID) => {
-        dispatch(removeDevice(deviceId, accessToken))
+        if (accessToken) {
+            dispatch(removeDevice(deviceId, accessToken));
+        }
     }
 
     return { devices, deviceList, error, status, deviceRegister, deviceRemove, deviceFetch }

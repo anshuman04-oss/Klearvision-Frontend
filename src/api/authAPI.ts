@@ -28,20 +28,49 @@ export const fetchUser = (accessToken : string) => async (dispatch: AppDispatch)
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+interface RegisterUserRequest {
+  firstName: string;
+  lastName: string | undefined;
+  mail: string;
+  phNo: string;
+  password: string;
+}
+export const registerUser = (user : User) => async () => {
+  if(!user.password) {
+    alert("Password is required");
+    return;
+  } else if(!user.email) {
+    alert("Email is required");
+    return;
+  } else if(!user.phone) {
+    alert("Phone number is required");
+    return;
+  } else if(!user.firstName) {
+    alert("First name is required");
+    return;
+  }
+  const url = `${API_BASE_URL}/v1/register`
 
-export const registerUser = (user : User) => async (dispatch : AppDispatch) => {
-  //TODO - Need to implement  - Done 
-  const url = `${API_BASE_URL}/v1/device/register`
+  const reqPayload : RegisterUserRequest = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    mail: user.email,
+    phNo: String(user.phone),
+    password: user.password
+  }
 
   try {
-    const response = await axios.post(url, user, {
+    const response = await axios.post(url, reqPayload, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
     console.log(response.data)
-    alert("User registered successfully");
-    dispatch(login({ email: user.email, password: user.password }));   // Sent to login page after successful registration
+    if(response.status === 200) {
+      alert("User registered successfully");
+    } else {
+      alert("User registration failed");
+    }
   } catch (error) {
     console.error("Error while registering ", error)
   }

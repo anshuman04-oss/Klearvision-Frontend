@@ -30,7 +30,7 @@ function CustomTabPanel(props: TabPanelProps) {
 function DetectionPage() {
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (newValue: number) => {
     setSelectedTab(newValue);
   };
 
@@ -56,7 +56,7 @@ function DetectionPage() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs 
             value={selectedTab} 
-            onChange={handleTabChange}
+            onChange={(_, value) => handleTabChange(value)}
             centered
             variant="fullWidth"
           >

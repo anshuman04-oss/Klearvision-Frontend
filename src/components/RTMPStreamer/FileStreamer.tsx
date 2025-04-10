@@ -179,7 +179,7 @@ const FileStreamer: React.FC<{ device?: Device }> = ({ device }) => {
         };
 
         newMediaRecorder.onerror = (event) => {
-          console.error("❌ MediaRecorder error:", event.error);
+          console.error("❌ MediaRecorder error:", event);
         };
 
         // Start recording with smaller timeslices for smoother streaming

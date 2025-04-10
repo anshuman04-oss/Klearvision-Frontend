@@ -64,21 +64,8 @@ const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
           videoRef.current?.play();
         });
 
-        hls.on(Hls.Events.ERROR, (event, data) => {
+        hls.on(Hls.Events.ERROR, (data) => {
           console.error("HLS Error:", data);
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                console.error("Network error encountered");
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                console.error("Media error encountered");
-                break;
-              default:
-                console.error("Fatal error encountered");
-                break;
-            }
-          }
         });
       }
     } else if (videoRef.current?.canPlayType("application/vnd.apple.mpegurl")) {

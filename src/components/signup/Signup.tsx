@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form"
-import { Button, Input, Status } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import { User } from "../../types";
 import Loading from "../Loading";
+import { TextField, Button } from "@mui/material";
+import { Status } from "../../constants";
 
 type SignUpFormData = {
     firstName   : string
@@ -15,13 +16,13 @@ type SignUpFormData = {
 }
 
 export default function Signup() {
-    const {error, status, signUpUser} = useAuth();
+    const {error, status, signupUser} = useAuth();
     const { register, handleSubmit } = useForm<SignUpFormData>()
     
 
     const onSubmit = (data: SignUpFormData) => {
         const user = data as User;
-        signUpUser(user);
+        signupUser(user);
     }
     return (
         <div className='flex justify-center items-center h-[90vh] w-full flex-col'>
@@ -41,66 +42,54 @@ export default function Signup() {
                 <form 
                     onSubmit={handleSubmit(onSubmit)}
                     className='flex items-center justify-center flex-col rounded-lg px-20'
-                >First Name
-                    <Input 
-                        label='firstName'
+                >
+                    <TextField 
+                        label='First Name'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg w-96'
                         placeholder='Enter your first name'
-                        // value={userid}
-                        // onChange={(e) => setUserid(e.target.value)}
                         {
                             ...register("firstName", {
                                 required: true
                             })
                         }
                     />
-                Last Name
-                    <Input 
-                        label='lastName'
+                    <TextField 
+                        label='Last Name'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
                         placeholder='Enter your last name'
-                        // value={userid}
-                        // onChange={(e) => setUserid(e.target.value)}
                         {
                             ...register("lastName", {
                                 required: false
                             })
                         }
                     />
-                Email Id
-                    <Input 
-                        label='email'
+                    <TextField 
+                        label='Email Id'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
                         placeholder='Enter your email id'
-                        // value={userid}
-                        // onChange={(e) => setUserid(e.target.value)}
                         {
                             ...register("email", {
                                 required: true
                             })
                         }
                     />
-                Phone Number
-                    <Input 
-                        label='phone'
+                    <TextField 
+                        label='Phone Number'
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
-                        placeholder='Enter your email id'
-                        // value={userid}
-                        // onChange={(e) => setUserid(e.target.value)}
+                        placeholder='Enter your phone number'
                         {
                             ...register("phone", {
                                 required: true
                             })
                         }
                     />
-                Password
-                    <Input 
-                        label='password'
-                        type="text" 
+                    <TextField 
+                        label='Password'
+                        type="password" 
                         className='bg-gray-700 focus: border-gray-500 focus: ring-1 focus: ring-gray-800
                         outline-none text-gray-50 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out rounded-lg'
                         placeholder='Enter Password'
@@ -109,8 +98,6 @@ export default function Signup() {
                                 required: true
                             })
                         }
-                        // value={password}
-                        // onChange={(e) => setPassword(e.target.value)}
                     />
                     <Button
                         type='submit'
@@ -121,54 +108,7 @@ export default function Signup() {
                 </form>
                 {status === Status.LOADING && <Loading />}
                 {status === Status.FAILED && <p className='text-red-500'>{error}</p>}
+            </div>
         </div>
-    </div>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// curl --location 'http://43.204.219.57:5000/api/v1/register' \
-// --header 'Content-Type: application/json' \
-// --data-raw '{
-//    "FistName" : "jack1",
-//    "lastName" : "rayan1",
-//    "mail":"kvision@12345",
-//    "phNo":"123334444455",
-//    "password":"klearvision@123"
-// }'
-
-// OUTPUT
-// {
-//     "userId": "003fb836-24e2-48aa-b9df-97573fb49727",
-//     "FistName": "jack1",
-//     "lastName": "rayan1",
-//     "mail": "kvision@12345",
-//     "phNo": "123334444455"
-// }
+    )
+}
