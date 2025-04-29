@@ -47,7 +47,9 @@ const HlsPlayer: React.FC<{ device?: Device }> = ({ device }) => {
     }
 
     const playbackURLToken = `${device.playBackUrl}?token=${device.playBackToken}`;
-    // const playbackURLToken = `https://9f18fad97252.ap-south-1.playback.live-video.net/api/video/v1/ap-south-1.495846082945.channel.xYRQgBuqgDAd.m3u8`;
+
+    console.log("Playback URL: ", device.playBackUrl);
+    console.log("Playback URL with token: ", playbackURLToken);
 
     if (hlsInstance.current) {
       hlsInstance.current.destroy();

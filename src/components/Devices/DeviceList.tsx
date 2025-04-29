@@ -43,13 +43,13 @@ const DeviceList : React.FC<object> = () : ReactElement => {
                         <div>
                             <div>
                                   <div className="flex items-center justify-between bg-gray-800 p-2 rounded-lg">
-                                    <Tooltip title={STREAM_URL}>
-                                    <span className="truncate max-w-[150px] text-white">stream URL</span>
+                                    <Tooltip title={selectedDevice.deviceId}>
+                                    <span className="truncate max-w-[150px] text-white">Device Id</span>
                                     </Tooltip>
                                     <Button 
                                     variant="contained" 
                                     color="primary" 
-                                    onClick={() => copyToClipboard(STREAM_URL)}
+                                    onClick={() => copyToClipboard(selectedDevice.deviceId)}
                                     >
                                     <ContentCopyIcon fontSize="small" />
                                     </Button>

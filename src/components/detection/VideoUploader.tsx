@@ -8,6 +8,7 @@ const VideoUploader: React.FC = () => {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (event.target.files && event.target.files.length > 0) {
+      console.log(event.target.files[0] + "Exists in handleFileChange");
       setSelectedVideo(event.target.files[0]);
     }
   };
@@ -19,8 +20,11 @@ const VideoUploader: React.FC = () => {
     const formData = new FormData();
     formData.append("video", selectedVideo);
 
+    console.log("Form data exists", formData)
+    console.log("Form data size:", Array.from(formData.entries()).length);
+
     try {
-      const response = await axios.post<{ processedVideoUrl: string }>(
+      const response = await axios.post(
         `${UPLOAD_BASE_URL}/upload/video`,
         formData,
         {
@@ -28,12 +32,16 @@ const VideoUploader: React.FC = () => {
         }
       );
 
+      // console.log("Response: ", response.data);
+
       setProcessedVideo(response.data.processedVideoUrl);
     } catch (error) {
-      console.error("Error uploading video:", error);
+      console.log("Error uploading video:", error);
     } finally {
       setLoading(false);
     }
+
+    // console.log("Processed video: ", processedVideo);
   };
 
   return (

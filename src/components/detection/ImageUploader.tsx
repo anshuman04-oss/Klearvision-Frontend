@@ -29,9 +29,12 @@ const ImageUploader: React.FC = () => {
         }
       );
 
+      console.log("Response:", response.data);
+
       setProcessedImage(response.data.processedImageUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
+      alert("Error uploading image. Please try again.");
     } finally {
       setLoading(false);
     }
