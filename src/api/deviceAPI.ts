@@ -40,7 +40,6 @@ export const removeDevice = (deviceId: UUID, accessToken: string) => async (disp
             }
         });
         console.log(response);
-        const data = response.data as Device;
         dispatch(deregister({deviceData : {deviceId}}))
     } catch (error) {
         console.log("Register device error: ", error);
@@ -74,7 +73,7 @@ export const fetchDevices = (accessToken: string) => async (dispatch: AppDispatc
     try {
         dispatch(deviceStatus({status: Status.LOADING}))
         const url = `${API_BASE_URL}/v1/device`;
-        const response = await axios.get(url,{
+        const response = await axios.get<{ [key: string]: Device }>(url,{
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${accessToken}`

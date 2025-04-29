@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Container from "../../container/Container";
-import LogoutBtn from "./LogoutBtn";
 import useAuth from "../../hooks/useAuth";
+import { Button, Container } from "@mui/material";
 
 function Header() {
 
-    const {isAuthenticated : authStatus} = useAuth();
+    const {isAuthenticated : authStatus, logoutUser} = useAuth();
     const navigate = useNavigate()
 
     const navItems = [
@@ -78,7 +75,11 @@ function Header() {
                         )}
                         {authStatus && (
                             <li>
-                                <LogoutBtn />
+                                <Button
+                                    className='inline-block px-6 py-2 duration-200 hover:bg-blue-600 rounded-full text-gray-50'
+                                    onClick={() => logoutUser()}
+                                >Logout
+                                </Button>
                             </li>
                         )}
                     </ul>

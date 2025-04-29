@@ -1,13 +1,16 @@
-/* eslint-disable prefer-const */
-import React, { useEffect } from 'react'
-import Dropdown from '../Dropdown'
-import Button from '../Button'
+import { Button, Select, MenuItem } from '@mui/material';
+import React from 'react'
 
 function CommonFilters() {
     const commonFilters = {"Display Option": ["Both Input and Output", "Output"], "Display Size": ["Small", "Medium", "Large"], "Select Settings": ["1", "2", "3"]}
     let [saveSettings, setSaveSettings] = React.useState(false);
     let [reset, setReset] = React.useState(false);
     let [close, setClose] = React.useState(false);
+
+    // State to store selected values
+    const [selectedDisplayOption, setSelectedDisplayOption] = React.useState(commonFilters['Display Option'][0]);
+    const [selectedDisplaySize, setSelectedDisplaySize] = React.useState(commonFilters['Display Size'][0]);
+    const [selectedSelectSettings, setSelectedSelectSettings] = React.useState(commonFilters['Select Settings'][0]);
 
     const handleSaveSettings = () => {
         saveSettings = !saveSettings;
@@ -26,17 +29,44 @@ function CommonFilters() {
 
     return (
         <div className='mt-4'>
-            <Dropdown mainElement='Display Option' sideElements={commonFilters['Display Option']}/>
-            <Dropdown mainElement='Display Size' sideElements={commonFilters['Display Size']}/>
-            <Dropdown mainElement='Select Settings' sideElements={commonFilters['Select Settings']}/>
+            <Select
+                value={selectedDisplayOption}
+                onChange={(e) => setSelectedDisplayOption(e.target.value)}
+            >
+                {commonFilters['Display Option'].map((option) => (
+                    <MenuItem key={option} value={option}>
+                        {option}
+                    </MenuItem>
+                ))}
+            </Select>
+            <Select
+                value={selectedDisplaySize}
+                onChange={(e) => setSelectedDisplaySize(e.target.value)}
+            >
+                {commonFilters['Display Size'].map((size) => (
+                    <MenuItem key={size} value={size}>
+                        {size}
+                    </MenuItem>
+                ))}
+            </Select>
+            <Select
+                value={selectedSelectSettings}
+                onChange={(e) => setSelectedSelectSettings(e.target.value)}
+            >
+                {commonFilters['Select Settings'].map((setting) => (
+                    <MenuItem key={setting} value={setting}>
+                        {setting}
+                    </MenuItem>
+                ))}
+            </Select>
             <Button
-                onClick={useEffect(handleSaveSettings, [saveSettings])}
+                onClick={handleSaveSettings}
             >Save Settings</Button>
             <Button
-                onClick={useEffect(handleReset, [reset])}
+                onClick={handleReset}
             >Reset</Button>
             <Button
-                onClick={useEffect(handleClose, [close])}
+                onClick={handleClose}
             >Close</Button>
         </div>
     )
