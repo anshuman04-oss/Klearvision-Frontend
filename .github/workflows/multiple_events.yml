@@ -1,0 +1,19 @@
+name: Multiple Events
+
+on:
+  push:
+    branches: 
+      - main
+      - hls-player-and-devices
+  pull_request:
+
+jobs:
+  echo_basic_info:
+    runs-on: "ubuntu-latest"
+    steps: 
+      - name: Echo Basic Information
+        run: |
+          echo "REF: ${{ github.ref }}"
+          echo "JOB_ID: ${{ github.job }}"
+          echo "Action: ${{ github.action }}"
+          echo "Actor: ${{ github.actor }}"
